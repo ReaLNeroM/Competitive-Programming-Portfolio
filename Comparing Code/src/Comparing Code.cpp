@@ -6,8 +6,7 @@ using namespace std;
 const int maxn = 1e3;
 int val[2][maxn][3];
 
-int ident_step[maxn][3];
-int ident[maxn][3];
+int ident[2][maxn * 3];
 
 int curr_step;
 
@@ -42,14 +41,32 @@ int main(){
 
 	int best_res = 0;
 
-	int curr_step = 1;
 	for(int i = 0; i < v[0]; i++){
+		int r = -1;
 		for(int j = 0; j < v[1]; j++){
-			if(v[0] - i < best_res or v[1] - j < best_res){
-				continue;
+			r = max(r, -1);
+
+			bool good = true;
+			while(good){
+				int a = ident[0][val[0][i + r + 1][0]];
+				int b = ident[1][val[1][j + r + 1][0]];
+				if(a and b and a != b){
+					good = false;
+				} else {
+					ident[0][val[0][i + r + 1][0]] = val[1][j + r + 1][0];
+					ident[1][val[1][j + r + 1][0]] = val[0][i + r + 1][0];
+				}
+
+				a = val[0][i + r + 1][1];
+				b = val[0][i + r + 1][2];
+				if(a == b){
+
+				}
 			}
 
-			// swapping storeb and storec adds a layer of complexity
+			best_res = max(best_res, r);
+			//disable j
+			r--;
 		}
 	}
 
