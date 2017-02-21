@@ -49,7 +49,6 @@ int main(){
 				continue;
 			}
 
-			// swapping storeb and storec adds a layer of complexity
 		}
 	}
 
