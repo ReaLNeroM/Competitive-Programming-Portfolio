@@ -6,7 +6,7 @@ using namespace std;
 const int maxn = 1e3;
 int val[2][maxn][3];
 
-int ident[2][maxn * 3];
+vector<int> ident[2][maxn * 3];
 
 int curr_step;
 
@@ -48,19 +48,45 @@ int main(){
 
 			bool good = true;
 			while(good){
-				int a = ident[0][val[0][i + r + 1][0]];
-				int b = ident[1][val[1][j + r + 1][0]];
-				if(a and b and a != b){
+				if(ident[val[0][i + r + 1][0]] and ident[val[0][i + r + 1][0]] != val[1][j + r + 1][0]){
 					good = false;
-				} else {
-					ident[0][val[0][i + r + 1][0]] = val[1][j + r + 1][0];
-					ident[1][val[1][j + r + 1][0]] = val[0][i + r + 1][0];
+				}
+				if(ident[val[1][j + 1 + 1][0]] and ident[val[1][j + r + 1][0]] != val[0][i + r + 1][0]){
+					good = false;
 				}
 
-				a = val[0][i + r + 1][1];
-				b = val[0][i + r + 1][2];
-				if(a == b){
+				if(val[0][i + r + 1][1] == val[0][i + r + 1][2]){
+					if(val[1][j + r + 1][1] != val[1][j + r + 1][2]){
+						good = false;
+					}
+					if(ident[val[0][i + r + 1][1]] and ident[val[0][i + r + 1][1]] != val[1][j + r + 1][1]){
+						good = false;
+					}
+					if(ident[val[1][j + r + 1][1]] and ident[val[1][j + r + 1][1]] != val[0][i + r + 1][1]){
+						good = false;
+					}
+				} else {
+					if(val[1][j + r + 1][1] == val[1][j + r + 1][2]){
+						good = false;
+					}
+					for(int x = 0; x < 2; x++){
+						if(ident[val[x][]])
+						for(int y = 0; x < 2; x++){
 
+						}
+					}
+				}
+
+				if(good){
+					ident[val[0][i + r + 1][0]] = val[1][j + r + 1][0];
+					ident[val[1][j + r + 1][0]] = val[0][i + r + 1][0];
+
+					if(val[0][i + r + 1][1] == val[0][i + r + 1][2]){
+						ident[val[0][i + r + 1][1]] = val[1][j + r + 1][1];
+					} else {
+						//possibilities
+					}
+					r++;
 				}
 			}
 
