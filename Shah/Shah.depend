@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1411571814 source:j:\informatics\c++\programs\shah\main.cpp
+	<iostream>
+	<cmath>
+

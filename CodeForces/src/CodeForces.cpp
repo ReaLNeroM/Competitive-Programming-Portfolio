@@ -1,53 +1,27 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <cmath>
 
-typedef long long ll;
 using namespace std;
+typedef long long ll;
 
-const int maxn = 1e6;
-int val[maxn];
-int on[maxn];
-int used[maxn];
-int res = 0;
+ll dpnot[31];
+ll dp[31];
 
+ll findnot(ll i){
+	if(dp[i] == -1){
+
+	}
+}
+
+ll find(ll i){
+	if(dp[i] == -1){
+
+	}
+}
 int main(){
-	ios::sync_with_stdio(false); cin.tie(0); cout.tie(0);
+	ios::sync_with_stdio(false);
 
-	int n;
+	ll n;
 	cin >> n;
-
-	int turned_on = 0;
-	for(int i = 0; i < n; i++){
-		cin >> val[i];
-		val[i]--;
-	}
-	for(int i = 0; i < n; i++){
-		cin >> on[i];
-		turned_on += on[i];
-	}
-
-	if(turned_on % 2 == 0){
-		res++;
-	}
-
-	int comps = 0;
-	for(int i = 0; i < n; i++){
-		if(!used[i]){
-			comps++;
-			int pos = i;
-
-			while(true){
-				if(used[val[pos]]){
-					break;
-				}
-				pos = val[pos];
-				used[pos] = true;
-			}
-		}
-	}
-
-	if(comps > 1){
-		res += comps;
-	}
-
-	cout << res;
 }

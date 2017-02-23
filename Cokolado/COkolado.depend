@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1411581148 source:j:\informatics\c++\programs\cokolado\main.cpp
+	<iostream>
+	<cstring>
+
