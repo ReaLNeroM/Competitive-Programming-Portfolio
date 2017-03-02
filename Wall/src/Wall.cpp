@@ -79,10 +79,10 @@ int query(int ind, int cl, int cr, int ql, int qr){
 
 int main() {
 	ios::sync_with_stdio(false); cin.tie(0); cout.tie(0);
-	
+
 	int n, q;
 	cin >> n >> q;
-	
+
 	for(int i = 0; i < 100; i++){
 		laz[i] = -1;
 	}
