@@ -1,80 +1,81 @@
-#include <iostream>
-#include <vector>
+#include <bits/stdc++.h>
 
 typedef long long ll;
+using namespace std;
 
-ll dpc[50000][151];
-ll val[50000];
-ll sum[50000];
-ll next[50000], child[50000];
-std::vector<ll> adj[50000];
+const ll maxn = 60000;
+const ll maxk = 200;
 
-bool used[50000];
+static ll n, k;
+static ll dp[maxn][maxk];
+static ll val[maxn];
+static ll par[maxn];
+static ll sum[maxn];
+std::vector<ll> adj[maxn];
+static ll putin[maxn];
+static bool used[maxn];
+
+void fillout(ll pos){
+	dp[pos][0] = sum[pos];
+
+	priority_queue<pair<ll, ll>> pq;
+	
+	for(ll i = 0; i < adj[pos].size(); i++){
+		ll next = adj[pos][i];
+		putin[next] = 0;
+		if(next != par[pos]){
+			pq.push({dp[next][1] - dp[next][0], next});
+		}
+	}
+
+	for(ll i = 0; i <= k and !pq.empty(); i++){
+		ll next_cost = pq.top().first;
+		ll next_ind = pq.top().second;
+		pq.pop();
+
+		dp[pos][i + 1] = max(dp[pos][i + 1], dp[pos][i] + next_cost);
+
+		putin[next_ind]++;
+		if(putin[next_ind] != k){
+			pq.push({
+				dp[next_ind][putin[next_ind] + 1] - dp[next_ind][putin[next_ind]]
+				, next_ind
+			});
+		}
+	}
+	dp[pos][1] = max(0LL, dp[pos][1]);
+	for(int i = 1; i <= k; i++){
+		dp[pos][i] = max(dp[pos][i], dp[pos][i - 1]);
+	}
+}
+
 void dfs(ll pos){
     used[pos] = true;
 
     sum[pos] = val[pos];
 
-    if(!adj[pos].empty()){
-        ll prev = -1;
-        for(ll i = 0; i < adj[pos].size(); i++){
-            if(!used[adj[pos][i]]){
-                if(prev != -1){
-                    next[prev] = adj[pos][i];
-                } else {
-                    child[pos] = adj[pos][i];
-                }
-                prev = adj[pos][i];
-                dfs(adj[pos][i]);
-                sum[pos] += sum[adj[pos][i]];
-            }
-        }
-    }
-}
+	for(ll i = 0; i < adj[pos].size(); i++){
+		ll nnext = adj[pos][i];
+		if(!used[nnext]){
+			par[nnext] = pos;
+			dfs(nnext);
+			sum[pos] += sum[nnext];
+		}
+	}
 
-ll findc(ll pos, ll left){
-    if(dpc[pos][left] == -50000000000001){
-        ll res = -50000000000001;
-
-        if(next[pos] == -1){
-        	if(child[pos] != -1){
-				res = findc(child[pos], left);
-        	}
-        } else if(child[pos] == -1){
-        	res = findc(next[pos], left);
-        } else {
-			for(ll i = 0; i <= left; i++){
-				ll first = sum[pos];
-
-				if(i > 0){
-					first = std::max(0LL, findc(child[pos], i) + val[pos]);
-				}
-				ll second = findc(next[pos], left - i);
-
-				if(first + second > res){
-					res = first + second;
-				}
-			}
-        }
-
-        dpc[pos][left] = res;
-    }
-
-    return dpc[pos][left];
+    fillout(pos);
 }
 
 int main() {
     std::ios::sync_with_stdio(false);
 
-    ll n, k;
+//    freopen("A.IN", "r", stdin);
     std::cin >> n >> k;
 
     for(ll i = 0; i < n; i++){
         std::cin >> val[i];
-        next[i] = child[i] = -1;
-        used[i] = false;
-        for(ll j = 0; j <= k; j++){
-            dpc[i][j] = -50000000000001;
+    	for(ll j = 0; j < maxk; j++){
+            dp[i][j] = -1000000000000000000;
         }
     }
 
@@ -89,6 +90,6 @@ int main() {
 
     dfs(0);
 
-    std::cout << findc(0, k);
+    cout << dp[0][k];
     return 0;
 }

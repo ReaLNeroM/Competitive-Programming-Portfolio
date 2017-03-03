@@ -1,37 +1,94 @@
-#include <iostream>
+#include <bits/stdc++.h>
 
-int cost[21][3], n;
+using namespace std;
+typedef long long ll;
 
-int dfs(int curr, int last = -1, int st = -1){
-	if(curr >= n){
-		return cost[curr][last];
-	}
+const int maxn = 1e6;
+int v, e;
+vector<pair<int, int>> adj[maxn];
+bool used[maxn];
+int col[maxn];
+int colv[maxn][2];
 
-	int min = 20000;
-	for(int i = 0; i < 3; i++){
-		if(curr < 0){
-			st = i;
-		} else if (i == last or (curr == n - 1 and st == i)) {
-			continue;
+bool verify(){
+	for(int i = 0; i < v; i++){
+		int seen[] = {false, false};
+		for(int j = 0; j < adj[i].size(); j++){
+			if(col[adj[i][j].second] != -1){
+				seen[col[adj[i][j].second]] = true;
+			}
 		}
-
-		min = std::min(dfs(curr + 1, i, st), min);
+		if(adj[i].size() >= 2 and (!seen[0] or !seen[1])){
+			return false;
+		}
 	}
 
-	if(curr > 0){
-		min += cost[curr][last];
+	return true;
+}
+
+bool dfs(int pos, int need){
+	for(int j = 0; j < adj[pos].size(); j++){
+		int next = adj[pos][j].first;
+
+		if(col[adj[pos][j].second] == -1 and !colv[pos][need]){
+			colv[pos][need]++;
+			colv[next][need]++;
+			col[adj[pos][j].second] = need;
+
+			if(!colv[next][!need]){
+				bool result = dfs(next, !need);
+
+				if(!result){
+					colv[pos][need]--;
+					colv[next][need]--;
+					col[adj[pos][j].second] = -1;
+				}
+			}
+		}
 	}
 
-	return min;
+	if(adj[pos].size() >= 2 and !colv[pos][need]){
+		return false;
+	}
+	return true;
 }
 
 int main(){
-	std::cin >> n;
 
-	for(int i = 0; i < n; i++){
-		std::cin >> cost[i][0] >> cost[i][1] >> cost[i][2];
+	ios::sync_with_stdio(false);
+
+	cin >> v >> e;
+
+	for(int i = 0; i < e; i++){
+		int f, s;
+		cin >> f >> s;
+		f--, s--;
+
+		adj[f].push_back({s, i});
+		adj[s].push_back({f, i});
+		col[i] = -1;
 	}
-	cost[n][0] = cost[0][0], cost[n][1] = cost[0][1], cost[n][2] = cost[0][2];
 
-	std::cout << dfs(-1);
+	for(int i = 0; i < v; i++){
+		if(!colv[i][0]){
+			if(!dfs(i, 0)){
+				cout << 0 << endl;
+				return 0;
+			}
+		}
+		if(!colv[i][1]){
+			if(!dfs(i, 1)){
+				cout << 0 << endl;
+				return 0;
+			}
+		}
+	}
+	
+	if(!verify()){
+		cout << "0" << endl;
+	} else {
+		for(int i = 0; i < e; i++){
+			cout << (char) ('1' + max(0, col[i]));
+		}
+	}
 }
