@@ -12,7 +12,7 @@
 #include <cstring>
 using namespace std;
 
-const int maxn = 100;
+const int maxn = 50005;
 vector<pair<int, int>> adj[maxn];
 bool vis[maxn];
 int mat[maxn];
