@@ -4,3 +4,5 @@
 *.kate-swp
 .metadata/*
 .directory
+*.out
+*.in
