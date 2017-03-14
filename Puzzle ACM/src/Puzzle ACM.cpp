@@ -27,7 +27,7 @@ void dfs(int pos){
 
 	dfs_num[pos] = curr;
 	dfs_low[pos] = curr;
- 	curr++;
+	curr++;
 
 	s.push(pos);
 	for(int i = 0; i < adj[pos].size(); i++){
@@ -47,11 +47,15 @@ void dfs(int pos){
 			s.pop();
 
 			if(fr < neg){
+				sweep[fr] = dfs_num[pos];
 				if(sweep[neg + fr] == dfs_num[pos]){
 					good = false;
 				}
 			} else {
 				sweep[fr] = dfs_num[pos];
+				if(sweep[fr - neg] == dfs_num[pos]){
+					good = false;
+				}
 			}
 			if(fr == pos){
 				break;
@@ -94,32 +98,12 @@ int main() {
 			}
 		}	
 
-		if(r * 2 != w){
+		if(r * 2 < w){
 			cout << "NO\n";
 			continue;
 		}
 
 		good = true;
-		for(int i = 0; i < y; i++){
-			for(int j = 0; j < x; j++){
-				if(m[i][j] == 'W'){
-					good = false;
-					for(int k = 0; k < 4; k++){
-						int ni = i + ay[k];
-						int nj = j + ax[k];
-
-						if(0 <= ni and ni < y and 0 <= nj and nj < x and m[ni][nj] == 'R'){
-							good = true;
-							break;
-						}
-					}
-					if(!good){
-						i = y, j = x;
-						break;
-					}
-				}
-			}
-		}
 		curr = 0;
 		for(int i = 0; i < maxn; i++){
 			adj[i].clear();
@@ -144,7 +128,6 @@ int main() {
 				}
 			}
 		}
-
 
 		for(int i = 0; i < y; i++){
 			for(int j = 0; j < x; j++){
