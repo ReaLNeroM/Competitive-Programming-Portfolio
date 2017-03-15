@@ -54,7 +54,7 @@ int main(){
 		num = exponentiate(num, d, n);
 
 		for(int j = 0; j < r; j++){
-	        ll nnext = (num * num) % n;
+	        ll nnext = russian_peasantry(num, num, n);
 	        if (nnext == 1 and num != 1 and num != n-1){
 	        	cout << "FALSE" << endl;
 	        	return 0;
