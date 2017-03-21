@@ -17,5 +17,6 @@ int main(){
     n %= 5;
     res += n;
     
-    cout << res;    
+    cout << res;
+    
 }
