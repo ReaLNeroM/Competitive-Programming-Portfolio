@@ -3,15 +3,15 @@
 typedef long long ll;
 
 const ll maxn = 1e5 + 1e2;
-ll seg[4 * maxn];
-vector<pair<pair<ll, ll>, ll>> upd_seg[4 * maxn];
+std::pair<ll, ll> seg[4 * maxn];
+std::vector<std::pair<std::pair<ll, ll>, ll>> upd_seg[4 * maxn];
 ll v, e, start;
 ll type[maxn];
 ll found[maxn];
-pair<ll, ll> f[maxn];
-pair<ll, ll> s[maxn];
+std::pair<ll, ll> f[maxn];
+std::pair<ll, ll> s[maxn];
 
-pair<ll, ll> query(int ind, int cl, int cr){
+std::pair<ll, ll> query(int ind, int cl, int cr){
 	if(cl == cr){
 		return seg[ind];
 	} else if(cr < cl){
@@ -20,8 +20,8 @@ pair<ll, ll> query(int ind, int cl, int cr){
 
 	int mid = (cl + cr) / 2;
 
-	pair<ll, ll> a = query(2 * ind + 1, cl     , mid);
-	pair<ll, ll> b = query(2 * ind + 2, mid + 1, cr );
+	std::pair<ll, ll> a = query(2 * ind + 1, cl     , mid);
+	std::pair<ll, ll> b = query(2 * ind + 2, mid + 1, cr );
 
 	if(a.second <= b.second){
 		return a;
