@@ -19,7 +19,6 @@ ll res = 0;
 ll mid;
 ll r_l, r_r;
 ll size;
-vector<int> dists;
 pair<ll, ll> seg[4 * maxn];
 pair<ll, ll> worst = {0, maxn};
 
@@ -65,16 +64,16 @@ void upd(ll pos = 0, ll cl = 0, ll cr = size - 1, pair<ll, ll> q = worst){
     seg[pos] = combine(seg[pos], q);
 }
 
-ll dfs(ll pos, ll par, ll swipe){
+ll dfs(ll pos, ll swipe){
     used[pos] = swipe;
+
     sum[pos] = 1;
 
     for(ll i = 0; i < adj[pos].size(); i++){
         ll nnext = adj[pos][i].first;
 
-        if(nnext != par){
-			sum[pos] += dfs(nnext, pos, swipe);
-			dists.push_back(adj[pos][i].second);
+        if(!disabled[nnext] and used[nnext] != swipe){
+			sum[pos] += dfs(nnext, swipe);
         }
     }
 
@@ -98,7 +97,7 @@ void dfs2(int pos, int par, bool update, int below_med, int dist_nodes){
     for(int i = 0; i < adj[pos].size() and res < mid; i++){
         int nnext = adj[pos][i].first;
 
-        if(nnext != par){
+        if(nnext != par and !disabled[nnext]){
             dfs2(nnext, pos, update, below_med + (adj[pos][i].second >= mid), dist_nodes + 1);
         }
     }
@@ -112,26 +111,16 @@ int main(){
     for(int i = 0; i < v - 1; i++){
         cin >> e[i][0] >> e[i][1] >> d[i];
         e[i][0]--, e[i][1]--;
+        adj[e[i][0]].push_back({e[i][1], d[i]});
+        adj[e[i][1]].push_back({e[i][0], d[i]});
     }
 
-    for(int swipe = 1; swipe <= 20; swipe++){
-        for(ll i = 0; i < v; i++){
-            adj[i].clear();
-        }
-
-        for(ll i = 0; i < v - 1; i++){
-            if(!disabled[e[i][0]] and !disabled[e[i][1]]){
-                adj[e[i][0]].push_back({e[i][1], d[i]});
-                adj[e[i][1]].push_back({e[i][0], d[i]});
-            }
-        }
-
+    for(int swipe = v; swipe >= 1; swipe /= 2){
+    	cout << swipe << endl;
+    	cout.flush();
         for(ll i = 0; i < v; i++){
             if(used[i] != swipe and !disabled[i]){
-            	dists.clear();
-                size = dfs(i, -1, swipe);
-                sort(dists.begin(), dists.end());
-
+                size = dfs(i, swipe);
                 bool good = true;
                 ll prev = -1;
                 ll centroid = i;
@@ -146,32 +135,6 @@ int main(){
                         }
                     }
                 } while(good);
-
-                ll l = 0, r = dists.size() - 1;
-
-                while(l <= r){
-                	ll actual_mid = (l + r) / 2;
-                	if(dists[actual_mid] <= res){
-                		l = actual_mid + 1;
-                		continue;
-                	}
-                    mid = dists[actual_mid];
-
-                    for(int j = 0; j < 4 * size; j++){
-                        seg[j] = worst;
-                    }
-
-                    for(ll j = 0; j < adj[centroid].size(); j++){
-                        dfs2(adj[centroid][j].first, centroid, false, (adj[centroid][j].second >= mid), 1);
-                        dfs2(adj[centroid][j].first, centroid, true, (adj[centroid][j].second >= mid), 1);
-                    }
-
-                    if(res >= mid){
-                        l = actual_mid + 1;
-                    } else {
-                        r = actual_mid - 1;
-                    }
-                }
 
                 disabled[centroid] = true;
             }

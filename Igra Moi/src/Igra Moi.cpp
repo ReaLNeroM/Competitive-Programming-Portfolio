@@ -5,30 +5,36 @@ typedef long long ll;
  
 const int maxn = 55;
 int blocked[maxn];
-vector<vector<int>> v;
 vector<int> used;
 int allowed[maxn];
 int n;
+int res = 7;
  
 void dfs(int pos){
-    for(int j = 1; j <= 6; j++){
+    for(int j = 1; j <= 6 and res == 7; j++){
         if(!used[(pos + j) % n] and allowed[j]){
             used[(pos + j) % n] = true;
             dfs((pos + j) % n);
             used[(pos + j) % n] = false;
         } else if(used[(pos + j) % n] == -1){
-            v.push_back(used);
+        	for(int i = 0; i < used.size(); i++){
+        		if(used[i] == 0){
+        			return;
+        		}
+        	}
+        	res = 1;
+        	return;
         }
     }
 }
  
 int main(){
     ios::sync_with_stdio(false); cin.tie(0); cout.tie(0);
-     
+
     cin >> n;
-     
+
     for(int i = 0; i < n; i++){
-        cin >> blocked[i];
+    	cin >> blocked[i];
     }
  
     int moves;
@@ -41,16 +47,19 @@ int main(){
 
     used.resize(n);
     for(int i = 0; i < 6; i++){
-        fill(used.begin(), used.end(), 0);
-        for(int j = 0; j <= i; j++){
-            used[j] = true;
-        }
         for(int j = 0; j < n; j++){
-            used[j] = blocked[j] | used[j];
+            used[j] = blocked[j];
         }
-        used[i] = -1;
-        dfs(i);
+        if(!used[i]){
+			used[i] = -1;
+			dfs(i);
+			break;
+        }
     }
  
-    cout << v.size();    
+    if(res == 7){
+    	cout << "GRESHKA" << endl;
+    } else {
+		cout << res;
+    }
 }
