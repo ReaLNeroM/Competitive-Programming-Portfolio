@@ -5,9 +5,11 @@ using namespace std;
 
 const int maxn = 1e5 + 1e2;
 vector<int> adj[maxn];
+int sub[maxn];
 
-int dfs(int pos, int par){
-	int time_taken = 1;
+pair<int, int> dfs(int pos, int par){
+	int time_taken = 0;
+	sub[pos] = 1;
 
 	vector<int> children;
 	for(int i = 0; i < adj[pos].size(); i++){
@@ -15,6 +17,8 @@ int dfs(int pos, int par){
 
 		if(nnext != par){
 			children.push_back(dfs(nnext, pos));
+			sub[pos] += sub[nnext];
+			children[children.size() - 1].first++;
 		}
 	}
 	
@@ -43,5 +47,5 @@ int main(){
 		adj[s].push_back(f);
 	}
 
-	cout << dfs(0, -1) - 1;
+	cout << dfs(0, -1).first - 1;
 }
