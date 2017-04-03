@@ -3,9 +3,10 @@
 typedef long long ll;
 using namespace std;
 
-const ll maxn = 1e5 + 1e2;
+const ll maxn = 1e3 + 1e2;
+const ll maxt = 1e4 + 1e2;
 const ll mod = 1e9 + 7;
-ll ways[maxn];
+int ways[maxn][maxt];
 ll val[maxn];
 
 int main(){
@@ -17,16 +18,42 @@ int main(){
 	for(int i = 0; i < n; i++){
 		cin >> val[i];
 	}
+	sort(val, val + maxn, greater<ll>());
 
-	ways[0] = 1;
-	for(int j = 1; j <= t; j++){
-		for(int i = 0; i < n; i++){
-			if(j >= val[i]){
-				ways[j] += ways[j - val[i]];
-				ways[j] %= mod;
+	ways[0][0] = 1;
+	for(int i = 1; i <= n; i++){
+		for(int j = 0; j <= t; j++){
+			ways[i][j] = ways[i - 1][j];
+			if(j >= val[i - 1]){
+				ways[i][j] += ways[i - 1][j - val[i - 1]];
+				ways[i][j] %= mod;
 			}
 		}
 	}
 
-	cout << ways[t];
+	int res = 0;
+	val[n] = 0;
+	int sum = 0;
+
+	for(int i = 0; i <= n; i++){
+		sum += val[n - i];
+
+		if(i == n){
+			for(int j = t - val[n - i]; 0 <= j - sum; j--){
+				if(j - sum >= 0){
+					res += ways[n - i][j - sum];
+					res %= mod;
+				}
+			}
+		} else {
+			for(int j = t - val[n - i]; t - val[n - i - 1] < j and 0 <= j - sum; j--){
+				if(j - sum >= 0){
+					res += ways[n - i][j - sum];
+					res %= mod;
+				}
+			}
+		}
+	}
+
+	cout << res;
 }
