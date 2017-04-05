@@ -84,7 +84,7 @@ ll sum(ll ql, ll qr, ll ind = 0, ll cl = 0, ll cr = n - 1){
 	ll mid = (cl + cr) / 2;
 
 	return (sum(ql, qr, 2 * ind + 1, cl     , mid) +
-		   sum(ql, qr, 2 * ind + 2, mid + 1, cr )) % mod;
+		    sum(ql, qr, 2 * ind + 2, mid + 1, cr )) % mod;
 }
 
 int main(){
