@@ -4,25 +4,15 @@ typedef long long ll;
 using namespace std;
 
 const ll maxn = 1e2 + 1e2;
-const ll maxcircle = 600;
+const ll maxcircle = 1000;
 ll n, percent;
 pair<ll, ll> p[maxn];
-pair<double, double> circ[maxcircle];
-pair<double, double> new_circ[maxcircle];
 vector<vector<pair<ll, ll>>> tri;
-double fir, sec;
 double radius;
 double eps = 0.000000001;
 
 ll convex(ll a, ll b, ll c){
 	return (p[b].first - p[a].first) * (p[c].second - p[a].second) - (p[b].second - p[a].second) * (p[c].first - p[a].first);
-}
-
-bool cmp(pair<ll, ll> a, pair<ll, ll> b){
-	double angle_a = atan2((double) a.first - fir, (double) a.second - sec);
-	double angle_b = atan2((double) b.first - fir, (double) b.second - sec);
-
-	return angle_a < angle_b;
 }
 
 double cross_res(pair<ll, ll> a, pair<ll, ll> b, pair<double, double> c){
@@ -48,62 +38,48 @@ int cross(pair<ll, ll> a, pair<ll, ll> b, pair<double, double> c){
 }
 
 double intersect(ll pos){
-	vector<pair<double, double>> v;
+	int vertices = 0, edges = 0;
 
-	double fir = 0.0, sec = 0.0;
 	for(int i = 0; i < 3; i++){
-		fir += tri[pos][i].first;
-		sec += tri[pos][i].second;
-
 		if(tri[pos][i].first * tri[pos][i].first + tri[pos][i].second * tri[pos][i].second <= radius * radius){
-			v.push_back(tri[pos][i]);
+			vertices++;
 		}
 	}
+	for(int i = 0; i < 3; i++){
 
-	fir /= 3.0;
-	fir -= eps;
-	sec /= 3.0;
-
-	for(int i = 0; i < maxcircle; i++){
-		if(		cross(tri[pos][0], tri[pos][1], {fir, sec}) == cross(tri[pos][0], tri[pos][1], new_circ[i]) and
-				cross(tri[pos][1], tri[pos][2], {fir, sec}) == cross(tri[pos][1], tri[pos][2], new_circ[i]) and
-				cross(tri[pos][2], tri[pos][0], {fir, sec}) == cross(tri[pos][2], tri[pos][0], new_circ[i])){
-			v.push_back(new_circ[i]);
-		}
 	}
-
 	double area = 0.0;
 
-	for(ll i = 0; i < v.size(); i++){
-		area += v[i].first * v[(i + 1) % v.size()].second - v[i].second * v[(i + 1) % v.size()].first;
-	}
-	area /= 2;
+	if(vertices == 0 and edges == 0){
 
-	return area;
+	} else if(vertices == 0 and edges == 1){
+		//
+	} else if(vertices == 0 and edges == 2){
+
+	} else if(vertices == 0 and edges == 3){
+
+	} else if(vertices == 1 and edges == 2){
+
+	} else if(vertices == 1 and edges == 3){
+
+	} else if(vertices == 2 and edges == 3){
+
+	} else if(vertices == 3 and edges == 3){
+		return cross_res(tri[pos][0], tri[pos][1], tri[pos][2]) / 2;
+	}
 }
 
 int main(){
 	ios::sync_with_stdio(false); cin.tie(0); cout.tie(0);
 
-	double ite = (4.0 * acos(0)) / (double) maxcircle;
-	double curr_angle = 0.0;
-	for(ll j = 0; j < maxcircle; j++){
-		circ[j] = {sin(curr_angle), cos(curr_angle)};
-		curr_angle += ite;
-	}
-	reverse(circ, circ + maxcircle); //so that it's counterclockwise
-
 	while(cin >> n >> percent){
-		double percent_in_double = (double) percent / 100.0;
-		fir = 0.0, sec = 0.0;
+		double percent_in_double = percent;
+		percent_in_double /= 100.0;
 		tri.clear();
 
 		for(ll i = 0; i < n; i++){
 			cin >> p[i].first >> p[i].second;
-			fir += p[i].first, sec += p[i].second;
 		}
-		fir /= (double) n, sec /= (double) n;
-		fir -= eps;
 
 		vector<ll> left;
 		for(ll i = 0; i < n; i++){
@@ -149,8 +125,8 @@ int main(){
 							area += ((double) convex(prev, curr, nnext)) / 2.0;
 
 							vector<pair<ll, ll>> v;
-							v.push_back(p[prev ]);
 							v.push_back(p[curr ]);
+							v.push_back(p[prev ]);
 							v.push_back(p[nnext]);
 							tri.push_back(v);
 
@@ -168,9 +144,6 @@ int main(){
 			double mid = (l + r) / 2.0;
 			radius = mid;
 
-			for(ll j = 0; j < maxcircle; j++){
-				new_circ[j] = {circ[j].first * mid, circ[j].second * mid};
-			}
 			double intersect_area = 0.0;
 
 			for(ll j = 0; j < tri.size(); j++){
