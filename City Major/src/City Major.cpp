@@ -4,7 +4,7 @@ typedef long long ll;
 using namespace std;
 
 const ll maxn = 1e2 + 1e2;
-const ll maxcircle = 1e3;
+const ll maxcircle = 600;
 ll n, percent;
 pair<ll, ll> p[maxn];
 pair<double, double> circ[maxcircle];
@@ -48,21 +48,38 @@ int cross(pair<ll, ll> a, pair<ll, ll> b, pair<double, double> c){
 }
 
 double intersect(ll pos){
-	int found = 0;
+	vector<pair<double, double>> v;
 
+	double fir = 0.0, sec = 0.0;
 	for(int i = 0; i < 3; i++){
+		fir += tri[pos][i].first;
+		sec += tri[pos][i].second;
+
 		if(tri[pos][i].first * tri[pos][i].first + tri[pos][i].second * tri[pos][i].second <= radius * radius){
-			found++;
+			v.push_back(tri[pos][i]);
 		}
 	}
 
-	if(found == 0){
-		return 0.0;
-	} else if(found == 3){
-		return abs(cross_res(tri[pos][0], tri[pos][1], tri[pos][2])) / 2.0;
-	} else {
+	fir /= 3.0;
+	fir -= eps;
+	sec /= 3.0;
 
+	for(int i = 0; i < maxcircle; i++){
+		if(		cross(tri[pos][0], tri[pos][1], {fir, sec}) == cross(tri[pos][0], tri[pos][1], new_circ[i]) and
+				cross(tri[pos][1], tri[pos][2], {fir, sec}) == cross(tri[pos][1], tri[pos][2], new_circ[i]) and
+				cross(tri[pos][2], tri[pos][0], {fir, sec}) == cross(tri[pos][2], tri[pos][0], new_circ[i])){
+			v.push_back(new_circ[i]);
+		}
 	}
+
+	double area = 0.0;
+
+	for(ll i = 0; i < v.size(); i++){
+		area += v[i].first * v[(i + 1) % v.size()].second - v[i].second * v[(i + 1) % v.size()].first;
+	}
+	area /= 2;
+
+	return area;
 }
 
 int main(){
@@ -129,7 +146,7 @@ int main(){
 						}
 
 						if(good){
-							area += ((double) -convex(prev, curr, nnext)) / 2.0;
+							area += ((double) convex(prev, curr, nnext)) / 2.0;
 
 							vector<pair<ll, ll>> v;
 							v.push_back(p[prev ]);
@@ -146,7 +163,7 @@ int main(){
 		}
 
 		double l = 0.001, r = 1000000.0;
-
+		double smallest = r;
 		for(ll i = 0; i < 30; i++){
 			double mid = (l + r) / 2.0;
 			radius = mid;
@@ -160,12 +177,16 @@ int main(){
 				intersect_area += intersect(j);
 			}
 
-			if(intersect_area / area - eps >= percent_in_double){
+			if(intersect_area / area + eps >= percent_in_double){
+				smallest = mid;
 				r = mid - eps;
 			} else {
 				l = mid + eps;
 			}
 		}
+
+		cout.precision(2);
+		cout << fixed << smallest << endl;
 	}
 }
 
