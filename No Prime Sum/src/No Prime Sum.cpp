@@ -64,5 +64,5 @@ int main(){
 		}
 	}
 
-	cout << res / 2;
+	cout << n - res;
 }
