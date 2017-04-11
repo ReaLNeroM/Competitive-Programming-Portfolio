@@ -4,7 +4,7 @@ using namespace std;
 typedef long long ll;
 
 const int maxn = 2e3 + 1e2;
-static int val[3 * maxn];
+static int val[1000000];
 static int available[3 * maxn];
 vector<int> adj[3 * maxn];
 static bool used[3 * maxn];
@@ -15,9 +15,6 @@ int main(){
 	int goal, n;
 	cin >> goal >> n;
 
-	if(n == 1000000){
-		return 0;
-	}
 	for(int i = 0; i < n; i++){
 		cin >> val[i];
 		available[maxn + val[i] - goal] = true;
