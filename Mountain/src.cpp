@@ -10,7 +10,9 @@ int compressed = 0;
 std::vector<std::vector<int> > queries;
 int rails;
 
-int seg[8 * maxn];
+int segcl[8 * maxn];
+int segcr[8 * maxn];
+int max[8 * maxn];
 int laz[8 * maxn];
 
 int prev = 0;
@@ -21,11 +23,8 @@ void propagate(int ind, int cl, int cr){
 	}
 
 	if(laz[ind] != -INF){
-		seg[2 * ind + 1] += prev;
-		seg[2 * ind + 2] += prev;
-		laz[2 * ind + 1] += prev;
-		laz[2 * ind + 2] += prev;
-		
+
+
 		laz[ind] = -INF;
 	}
 }
@@ -36,17 +35,12 @@ void update(int ql, int qr, int val, int ind = 0, int cl = 0, int cr = compresse
 	if(cr < ql){
 		return;
 	} else if(qr < cl){
-		seg[ind] += prev;
+		segcl[ind] += prev;
+		segcr[ind] += prev;
 		laz[ind] += prev;
 		return;
 	} else if(ql <= cl and cr <= qr){
-		int curr_prev = prev;
 
-		prev += (r[cr] - r[cl] + 1) * val - (seg[ind] - curr_prev);
-
-		seg[ind] = curr_prev + (r[cr] - r[cl] + 1) * val;
-
-		inc[ind] = val;
 		return;
 	}
 
@@ -55,7 +49,9 @@ void update(int ql, int qr, int val, int ind = 0, int cl = 0, int cr = compresse
 	update(ql, qr, val, 2 * ind + 1, cl     , mid);
 	update(ql, qr, val, 2 * ind + 2, mid + 1, cr );
 
-	seg[ind] = seg[2 * ind + 1] + seg[2 * ind + 2];
+	segcl[ind] = segcl[2 * ind + 1];
+	segcr[ind] = segcr[2 * ind + 2];
+
 	laz[ind] = -INF;
 }
 
@@ -103,8 +99,6 @@ int main(){
 	for(int i = 0; i < queries.size(); i++){
 		if(queries[i].size() == 3){
 			update(m[queries[i][0]], m[queries[i][1]], queries[i][2]);
-			update_max(m[queries[i][0]]);
-			update_max(m[queries[i][1]]);
 		} else {
 			std::cout << query(queries[i][0] + 1) << '\n';
 		}
