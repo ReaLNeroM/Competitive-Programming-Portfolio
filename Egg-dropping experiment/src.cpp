@@ -7,7 +7,7 @@ int dp[maxn][maxn];
 
 int main(){
 	int n = 10;
-	
+
 	for(int i = 0; i < maxn; i++){
 		for(int j = 0; j < maxn; j++){
 			dp[i][j] = 1e9;
@@ -23,5 +23,12 @@ int main(){
 				dp[i][j] = std::min(dp[i][j], std::max(dp[i][k - 1], dp[k + 1][i + size - 1]) + k);
 			}
 		}
+	}
+
+	for(int i = 0; i < n; i++){
+		for(int j = i; j <= n; j++){
+			std::cout << dp[i][j] << ' ';
+		}
+		std::cout << std::endl;
 	}
 }
