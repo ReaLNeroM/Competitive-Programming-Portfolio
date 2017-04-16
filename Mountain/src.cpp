@@ -53,15 +53,27 @@ void propagate(int ind, int cl, int cr){
 	laz[ind] = 0;
 }
 
+int prev = 0;
+
 void update(int ql, int qr, int c, int ind = 0, int cl = 0, int cr = compressed - 1){
 	propagate(ind);
 
 	if(cr < ql){
 		return;
 	} else if(qr < cl){
-
+		seg[ind] += prev;
+		laz[ind] += prev;
+		segcl[ind] += prev;
+		segcr[ind] += prev;
+		return;
 	} else if(ql <= cl and cr <= qr){
-
+		is_update[ind] = true;
+		inc[ind] = c;
+		segcl[ind] += prev;
+		prev = segcl[ind] + (r[cr] - r[cl] + 1) * inc[ind] - segcr[ind];
+		segcr[ind] = segcl[ind] + (r[cr] - r[cl]) * inc[ind];
+		seg[ind] = std::max(stdcl[ind], segcr[ind]);
+		return;
 	}
 
 	int mid = (cl + cr) / 2;
@@ -75,7 +87,7 @@ void update(int ql, int qr, int c, int ind = 0, int cl = 0, int cr = compressed 
 }
 
 int query(int height){
-	
+	in
 }
 
 int main(){
