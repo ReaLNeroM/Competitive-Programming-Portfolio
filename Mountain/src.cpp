@@ -70,7 +70,7 @@ void update(int ql, int qr, int c, int ind = 0, int cl = 0, int cr = compressed 
 		is_update[ind] = true;
 		inc[ind] = c;
 		segcl[ind] += prev;
-		prev = segcl[ind] + (r[cr] - r[cl] + 1) * inc[ind] - segcr[ind];
+		// prev = segcl[ind] + (r[cr] - r[cl] + 1) * inc[ind] - segcr[ind];
 		segcr[ind] = segcl[ind] + (r[cr] - r[cl]) * inc[ind];
 		seg[ind] = std::max(stdcl[ind], segcr[ind]);
 		return;
@@ -87,7 +87,24 @@ void update(int ql, int qr, int c, int ind = 0, int cl = 0, int cr = compressed 
 }
 
 int query(int height){
-	in
+	int l = 0, r = compressed - 1;
+	int ind = 0;
+
+	int last = 0;
+
+	while(l < r){
+		int mid = (l + r) / 2;
+
+		if(seg[2 * ind + 1] < height){
+			r = mid;
+			ind = 2 * ind + 1;
+		} else {
+			l = mid + 1;
+			ind = 2 * ind + 2;
+		}
+	}
+
+
 }
 
 int main(){
