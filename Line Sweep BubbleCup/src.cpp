@@ -4,39 +4,52 @@ typedef long long ll;
 
 const int maxn = 2005;
 int block[maxn][maxn];
-int sum[maxn][maxn];
-int done[maxn][maxn];
-int main(){
-	std::ios::sync_with_stdio(false);
+int sweep_length[maxn];
+int real_length[maxn];
+int y, x;
+int res;
 
-	int y, x;
-	std::cin >> y >> x;
-
-	int p;
-	std::cin >> p;
-
-	for(int i = 0; i < p; i++){
-		int py, px;
-		std::cin >> py >> px;
-
-		block[py][px] = true;
-	}
-
-	for(int i = 1; i <= y; i++){
-		for(int j = 1; j <= x; j++){
-			sum[i][j] = block[i][j] + sum[i][j - 1] + sum[i - 1][j] - sum[i - 1][j - 1];
+void propagate(int py, int px){
+	for(int j = px - 1; j >= 0; j--){
+		if(real_length[j] >= res and sweep_length[j] >= 1){
+			sweep_length[j] = 0;
+		} else {
+			break;
 		}
 	}
+	for(int j = px + 1; j < x; j++){
+		if(real_length[j] >= res - 1 and !block[py][j] and sweep_length[j] >= 0){
+			sweep_length[j] = -1;
+		} else {
+			break;
+		}
+	}
+}
 
-	int res = y;
-	for(int j = 1; j <= x; j++){
+int main(){
+	scanf("%d%d", &y, &x);
+
+	int p;
+	scanf("%d", &p);
+
+	int py, px;
+	for(int i = 0; i < p; i++){
+		scanf("%d %d", &py, &px);
+
+		block[py - 1][px - 1] = true;
+	}
+
+	res = y;
+
+	for(int j = 0; j < x; j++){
 		int run = 0;
 
-		for(int i = 1; i <= y + 1; i++){
-			if(j == y + 1 or block[i][j]){
+		for(int i = 0; i <= y; i++){
+			if(i == y or block[i][j]){
 				if(run != 0){
 					res = std::min(res, run);
 				}
+
 				run = 0;
 			} else {
 				run++;
@@ -45,46 +58,25 @@ int main(){
 	}
 
 	int sweeps = 0;
-	for(int i = 1; i <= y; i++){
-		int start = false;
 
-		for(int j = 1; j <= x; j++){
-			if(!done[i][j] and sum[i + res - 1][j] - sum[i - 1][j] - sum[i][j - 1] + sum[i - 1][j - 1] == 0){
-				if(!start){
-					std::cout << i << ' ' << j << std::endl;
+	for(int i = 0; i < y; i++){
+		for(int j = 0; j < x; j++){
+			if(block[i][j]){
+				sweep_length[j] = 0;
+				real_length[j] = 0;
+			} else {
+				sweep_length[j]++;
+				real_length[j]++;
+
+				if(sweep_length[j] == res or (sweep_length[j] >= 1 and (i == y - 1 or block[i + 1][j]))){
+					sweep_length[j] = 0;
 					sweeps++;
-					start = true;
-				}
-			} else if(start and sum[i + res - 1][j] - sum[i - 1][j] - sum[i][j - 1] + sum[i - 1][j - 1] != 0){
-				start = false;
-			}
-			if(start){
-				for(int k = i; k < i + res; k++){
-					done[k][j] = true;
+
+					propagate(i, j);
 				}
 			}
 		}
 	}
 
-	for(int i = y; i >= 1; i--){
-		int start = false;
-
-		for(int j = 1; j <= x; j++){
-			if(!done[i][j] and sum[i][j] - sum[i - res][j] - sum[i][j - 1] + sum[i - res][j - 1] == 0){
-				if(!start){
-					sweeps++;
-					start = true;
-				}
-			} else if(start and sum[i][j] - sum[i - res][j] - sum[i][j - 1] + sum[i - res][j - 1] != 0){
-				start = false;
-			}
-			if(start){
-				for(int k = i; k > i - res; k--){
-					done[k][j] = true;
-				}
-			}
-		}
-	}
-
-	std::cout << res << '\n' << sweeps << std::endl;
+	printf("%d\n%d\n", res, sweeps);
 }
