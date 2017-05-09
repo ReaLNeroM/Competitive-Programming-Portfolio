@@ -32,20 +32,20 @@ class SecretNumbers{
 				if(!follow){
 					for(ll i = 0; i < 10; i++){
 						if(left >= i){
-							ans +=   dfs(pos + 1, left - i, follow);
-							ans %= mod;
+							ans  +=  dfs(pos + 1, left - i, follow);
+							ans  %= mod;
 							sans += suma[pos + 1][left - i][follow];
-							sans += dfs(pos + 1, left - i, follow) * vlijanie[pos] * i;
+							sans +=  dfs(pos + 1, left - i, follow) * vlijanie[pos] * i;
 							sans %= mod;
 						}
 					}
 				} else {
 					for(ll i = 0; i < (s[pos] - '0'); i++){
 						if(left >= i){
-							ans +=   dfs(pos + 1, left - i, false);
-							ans %= mod;
+							ans  +=  dfs(pos + 1, left - i, false);
+							ans  %= mod;
 							sans += suma[pos + 1][left - i][false];
-							sans += dfs(pos + 1, left - i, false) * vlijanie[pos] * i;
+							sans +=  dfs(pos + 1, left - i, false) * vlijanie[pos] * i;
 							sans %= mod;
 						}
 					}

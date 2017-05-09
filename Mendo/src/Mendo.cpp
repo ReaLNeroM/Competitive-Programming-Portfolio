@@ -2,10 +2,8 @@
 using namespace std;
 
 int main() {
-	int y, x;
-	while(cin >> y >> x){
-		cout << atan2(y, x) << endl;
-	}
+	const int mod = 1e9 + 7;
 
+	std::cout << mod + mod;
 
 }
