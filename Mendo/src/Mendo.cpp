@@ -2,8 +2,7 @@
 using namespace std;
 
 int main() {
-	const int mod = 1e9 + 7;
-
-	std::cout << mod + mod;
+	long double x = 1;
+	std::cout << sizeof(x);
 
 }
