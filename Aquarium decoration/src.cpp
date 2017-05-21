@@ -123,7 +123,7 @@ int main(){
 					break;
 				}
 			}
-		}
+			}
 
 		if(taken == m and pos[3] + pos[1] >= k and pos[3] + pos[2] >= k){
 			best = std::min(sum, best);
