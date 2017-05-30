@@ -1,50 +1,82 @@
 #include <bits/stdc++.h>
-
+ 
 typedef long long ll;
 
-const int mostprimefactors = 20; //overkill
-std::vector<int> bigger[mostprimefactors];
+ll f_brute(ll b){
+    ll res = 0;
+    for(ll a = b / 2 + 1; a <= b; a++){
+        if((b * a) % (2 * a - b) == 0){
+            res += 2;
+            // std::cout << a << ' ' << (b * a) / (2 * a - b) << std::endl;
+        }
+    }
+ 
+    res--; // a == c leads to overcounting
+
+    return res;
+}
+
+ll f_smart(ll b){
+	if(b == 2){
+		return 1;
+	} else if(b == 4){
+		return 3;
+	}
+ 	
+ 	if(b % 2 == 0){
+ 		ll residue = b;
+
+ 		residue /= 2;
+
+ 		ll factors = 1;
+
+ 		for(int i = 2; i * i <= residue; i++){
+ 			ll pow = 0;
+ 			while(residue % i == 0){
+ 				pow++;
+ 				residue /= i;
+ 			}
+
+ 			if(pow){
+ 				factors *= (2 * pow) + 1;
+ 			}
+  		}
+
+  		if(residue > 1){
+  			factors *= 3;
+  		}
+
+  		return factors;
+ 	} else {
+ 		ll residue = b;
+
+ 		ll factors = 1;
+
+ 		for(int i = 2; i * i <= residue; i++){
+ 			ll pow = 0;
+
+ 			while(residue % i == 0){
+ 				pow++;
+ 				residue /= i;
+ 			}
+
+
+	 		factors *= 2 * pow + 1;
+  		}
+
+  		if(residue != 1){
+  			factors *= 3;
+  		}
+
+ 		return factors;
+ 	}
+}
 
 int main(){
 	std::ios::sync_with_stdio(false);
-
-	ll b;
+ 
+	ll b;	
 	std::cin >> b;
 
-	// std::vector<int> primes;
-	// ll residue = b;
-
-	// for(int i = 2; i * i < residue; i++){
-	// 	if(residue % i == 0){
-	// 		primes.push_back(i);
-	// 		while(residue % i == 0){
-	// 			residue /= i;
-	// 		}
-	// 	}
-	// }
-
-	// if(residue != 1){
-	// 	primes.push_back(residue);
-	// 	residue = 1;
-	// }
-
-	// for(int i = 0; i < primes.size(); i++){
-	// 	for(int j = primes[i]; j < b; j *= primes[i]){
-	// 		if()
-	// 	}
-	// }
-
-	ll res = 0;
-
-	for(ll a = b / 2 + 1; a <= b; a++){
-		if((b * a) % (2 * a - b) == 0){
-			res += 2;
-
-			std::cout << a << ' ' << (b * a) / (2 * a - b) << std::endl;
-		}
-	}
-
-	res--; // a == c leads to overcounting
-
-	std::cout << res;
+	std::cout << f_smart(b) << std::endl;
 }
