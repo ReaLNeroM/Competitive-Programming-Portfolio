@@ -1,66 +1,53 @@
 #include <bits/stdc++.h>
 
-typedef long long ll;
-
-const int maxn = 20;
-const int maxpow2 = 262144;
-const ll mod = 1e9 + 7;
-ll dp[maxpow2][maxn][maxn];
+const int maxn = 205;
+const int mod = 1e9 + 7;
+int dp[maxn][maxn][maxn];
 int n, s, e;
-ll res = 0;
-
-ll dfs(int bit, int pos, int par){
-	if(dp[bit][pos][par] == -1){
-		ll &ans = dp[bit][pos][par];
-		ans = 0;
-
-		if(bit == (1 << n) - 1){
-			if(pos == e){
-				ans = 1;
-			} else {
-				ans = 0;
-			}
-		} else {
-			if(par <= pos){
-				for(int i = 0; i < pos; i++){
-					if(!(bit & (1 << i))){
-						ans += dfs(bit | (1 << i), i, pos);
-					}
-				}
-			} 
-			if(pos <= par){
-				for(int i = pos + 1; i < n; i++){
-					if(!(bit & (1 << i))){
-						ans += dfs(bit | (1 << i), i, pos);
-					}
-				}
-			}
-		}
-	}
-
-	return dp[bit][pos][par];
-}
 
 int main(){
 	std::ios::sync_with_stdio(false);
 
-	for(n = 2; n <= 20; n++){
-		for(s = 0; s < n; s++){
-			for(e = s + 1; e < n; e++){
-				for(int i = 0; i < maxpow2; i++){
-					for(int j = 0; j < n; j++){
-						for(int k = 0; k < n; k++){
-							dp[i][j][k] = -1;
-						}
+	std::cin >> n >> s >> e;
+
+	dp[1][1][1] = 1;
+	dp[2][1][2] = 1;
+	dp[2][2][1] = 1;
+	dp[2][1][1] = 0;
+	dp[2][2][2] = 0;
+
+	int si, sj;
+	for(int x = 3; x <= n; x++){
+		for(int i = 1; i <= n; i++){
+			for(int j = 1; j <= n; j++){
+				si = i, sj = j;
+				if(i > j){
+					si = n - i;
+					sj = n - j;
+				}
+				
+				if(si == 1){
+					if(n % 2 == 1){
+						dp[x][1][sj] = dp[x][1][sj - 1] - dp[x - 1][1][sj - 1];
+						dp[x][1][sj] %= mod;
+					} else {
+						dp[x][1][sj] = dp[x][1][sj - 1] + dp[x - 1][1][sj - 1];
+						dp[x][1][sj] %= mod;
 					}
+				} else if(si == 2){
+					dp[x][2][sj] = dp[x][1][sj] + dp[x - 1][1][sj - 1];
+				} else {
+					dp[x][si][sj] = 2 * dp[x][si - 1][sj] - dp[x][si - 2][sj] - dp[x - 2][si - 2][sj - 2];
+					dp[x][si][sj] %= mod;
 				}
-				std::cout << dfs(1 << s, s, s);
-				if(s != n - 2 or e != n - 1){
-					std::cout << ", ";
-				}
-				std::cerr << s << ' ' << e << std::endl;
 			}
 		}
-		std::cout << std::endl;
 	}
+
+	if(s > e){
+		s = n - s;
+		e = n - e;
+	}
+
+	std::cout << dp[3][1][2];
 }
