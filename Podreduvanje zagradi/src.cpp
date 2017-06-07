@@ -49,6 +49,13 @@ int main(){
 		}
 	}
 
+	for(int i = 0; i < 2 * n; i++){
+		for(int j = 0; j <= i; j++){
+			std::cout << dfs(i, j) << ' ';
+		}
+		std::cout << std::endl;
+	}
+
 	std::string s = "";
 
 	if(k >= dfs(1, 1)){
