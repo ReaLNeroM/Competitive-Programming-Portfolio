@@ -67,10 +67,10 @@ void query(ll ind, ll l, ll r, ll a, ll b){
 	} else if(a <= l and r <= b){
 		std::vector<ll> b = {pocetok[ind], kraj[ind], maksimum[ind], suma[ind]};
 
-		v_a[0] = std::max(v_a[0], v_a[3] + b[0]);
-		v_a[1] = std::max(b[1], b[3] + v_a[1]);
 		v_a[2] = std::max(std::max(v_a[2], b[2]), v_a[1] + b[0]);
 		v_a[3] = v_a[3] + b[3];
+		v_a[0] = std::max(v_a[0], v_a[3] + b[0]);
+		v_a[1] = std::max(b[1], b[3] + v_a[1]);
 	} else {
 		ll mid = (l + r) / 2;
 
@@ -106,10 +106,6 @@ int main(){
 		std::cin >> t >> a >> b;
 
 		a--;
-
-		// for(int i = 0; i <= 6; i++){
-		// 	std::cout << pocetok[i] << ' ' << kraj[i] << ' ' << maksimum[i] << ' ' << suma[i] << std::endl;
-		// }
 
 		if(t == 0){
 			update(0, 0, n - 1, a, b);
