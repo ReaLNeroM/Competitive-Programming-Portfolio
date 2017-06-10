@@ -3,9 +3,9 @@
 typedef long long ll;
 
 const ll maxn = 1582;
-std::vector<int> incr[maxn];
-std::vector<int> step[maxn];
-std::vector<int> v[2500005];
+std::vector<ll> v[maxn];
+std::vector<int> seg[maxn];
+std::vector<int> laz[maxn];
 bool swapped = false;
 
 int main(){
@@ -20,9 +20,7 @@ int main(){
 	}
 
 	for(int i = 0; i <= y; i++){
-		incr[i].resize(x + 5, 0);
-		step[i].resize(x + 5, 0);
-		v[i].resize(x + 5, 0);
+		v[i].resize(x + 1);
 	}
 
 	int elektrani;
@@ -34,22 +32,14 @@ int main(){
 		if(swapped){
 			std::swap(y1, x1);
 		}
-
-		int jumps = (start - 1) / step;
 	}
 
-	for(int startx = 1; startx <= x; startx++){
-		int currsum = 0;
-		int currstep = 0;
-
-		for(int i = y, j = startx; i >= 1 and j >= 1; i--, j--){
-			currsum += currstep;
-			currsum += incr[i][j];
-			currite += step[i][j];
-			v[i][j] = currsum;
+	for(int i = 0; i < y; i++){
+		for(int j = 0; j < x; j++){
+			query()
 		}
 	}
-	
+
 	for(int starty = 1; starty <= y - 1; starty++){
 		int currsum = 0;
 		int currstep = 0;
