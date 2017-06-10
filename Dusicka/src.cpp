@@ -55,9 +55,10 @@ int main(){
 
 	for(ll i = 0; i < q; i++){
 		ll l, r;
+		l = 1, r = n;
 		std::cin >> l >> r;
 
-		for(ll j = 0; j < maxbit; j++){
+		for(ll j = 0; j < 20; j++){
 			app[j] = pref[j][r] - pref[j][l - 1];
 		}
 
