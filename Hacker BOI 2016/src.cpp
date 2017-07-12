@@ -2,28 +2,28 @@
 
 typedef long long ll;
 
-const ll maxn = 262144;
+const ll maxn = 300005;
 const ll mod = 1e9 + 9;
-ll seg[2][8 * maxn];
-ll laz[2][8 * maxn];
+ll seg[8 * maxn];
+ll segl[26][8 * maxn];
+ll laz[8 * maxn];
 ll ppow[maxn];
 std::unordered_map<ll, std::vector<ll>> m;
-std::string s[2];
+std::string s;
 
-void build(ll side, ll l, ll r, ll ind){
+void build(ll l, ll r, ll ind){
 	if(l == r){
-		seg[side][ind] = s[side][l] - 'a' + 1;
+		seg[ind] = s[l] - 'a' + 1;
+		segl[s[l]]
 		return;
 	}
 
-	ll mid = (l + r) / 2;
+	int mid = (l + r) / 2;
 
-	build(side, l, mid, 2 * ind + 1);
-	build(side, mid + 1, r, 2 * ind + 2);
+	build(l, mid, 2 * ind + 1);
+	build(mid + 1, r, 2 * ind + 2);
 
-	seg[side][ind] = seg[side][2 * ind + 1] * ppow[mid - l + 1] + seg[side][2 * ind + 2];
-	seg[side][ind] %= mod;
-	m[seg[side][ind]] = {seg[side][2 * ind + 1], seg[side][2 * ind + 2], (r - l + 1) / 2, (r - l + 1) / 2};
+	seg[ind] = seg[2 * ind + 1] * ppow[r - (mid + 1) + 1] + seg[2 * ind + 2];
 }
 
 void propagate(ll side, ll ind, ll l, ll r){
@@ -110,7 +110,7 @@ int main(){
 	ll n, q;
 	std::cin >> n >> q;
 
-	std::cin >> s[0];
+	std::cin >> s;
 	while(s[0].size() != maxn){
 		s[0] += (char) ('a' - 1);
 	}
