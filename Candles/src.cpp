@@ -2,38 +2,37 @@
 
 typedef long long ll;
 
-const int maxn = 1e6 + 100;
-int n;
-int h[maxn];
-int candles[maxn];
+const ll maxn = 1e6 + 100;
+ll n;
+ll h[maxn];
+ll candles[maxn];
+ll v[maxn];
+ll res = 0;
 
-int res = 0;
-
-bool good(int pos){
+bool good(ll pos){
     if(pos == 0){
         return true;
     }
-    std::map<int, int> m;
-    for(int i = 0; i < pos; i++){
+    std::map<ll, ll> m;
+    for(ll i = 0; i < pos; i++){
         m[candles[i]]++;
     }
-    
-    std::vector<int> v;
-    v.resize(m.rbegin()->first, 0);
-    int sum = 0;
-    int prev = m.rbegin()->first - 1;
-    int ind;
+
+    std::fill(v, v + (int) m.rbegin()->first, 0);
+    ll sum = 0;
+    ll prev = m.rbegin()->first - 1;
+    ll ind;
     for(auto i = m.rbegin(); true; i++){
         if(i == m.rend()){
             ind = 0;
-            for(int j = ind; j <= prev; j++){
-                v[j] = sum;
+            for(ll j = ind; j <= prev; j++){
+            	v[j] = sum;
             }
             prev = ind;
             break;
         } else {
             ind = i->first - 1;
-            for(int j = ind; j <= prev; j++){
+            for(ll j = ind; j <= prev; j++){
                 v[j] = sum;
             }
             prev = ind;
@@ -41,11 +40,11 @@ bool good(int pos){
         sum += i->second;
     }
 
-    std::sort(v.begin(), v.end());
-    
-    int curr = 0;
-    int left = 0;
-    for(int i = 0; i < v.size(); i++){
+    std::reverse(v, v + (ll) m.rbegin()->first);
+
+    ll curr = 0;
+    ll left = 0;
+    for(ll i = 0; i < m.rbegin()->first; i++){
         do {
             if(curr == n){
                 return false;
@@ -53,33 +52,33 @@ bool good(int pos){
             left += h[curr];
             curr++;
         } while(left < v[i]);
-        
+
         left -= v[i];
     }
-    
+
     return true;
 }
 
 int main(){
     std::ios::sync_with_stdio(false);
-    
-    int evenings;
+
+    ll evenings;
     std::cin >> n >> evenings;
-    
-    for(int i = 0; i < n; i++){
+
+    for(ll i = 0; i < n; i++){
         std::cin >> h[i];
     }
     std::sort(h, h + n);
-    
-    for(int i = 0; i < evenings; i++){
+
+    for(ll i = 0; i < evenings; i++){
         std::cin >> candles[i];
     }
-    
-    int l = 0, r = evenings;
-    
+
+    ll l = 0, r = evenings;
+
     while(l <= r){
-        int mid = (l + r) / 2;
-        
+        ll mid = (l + r) / 2;
+
         if(good(mid)){
             l = mid + 1;
             res = mid;
@@ -87,6 +86,6 @@ int main(){
             r = mid - 1;
         }
     }
-    
+
     std::cout << res;
 }
