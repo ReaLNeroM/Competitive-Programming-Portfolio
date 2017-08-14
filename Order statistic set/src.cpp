@@ -33,11 +33,11 @@ void merge(ptreap& pos, ptreap l, ptreap r){
 			pos = l;
 		}
 	} else if(l->prior > r->prior){
-		pos = l;
-		merge(pos->r, l->r, r);
+		merge(l->r, l->r, r);
+		pos = l];
 	} else {
+		merge(r->l, l, r->l);
 		pos = r;
-		merge(pos->l, l, r->l);
 	}
 
 	update_size(pos);

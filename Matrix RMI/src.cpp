@@ -3,7 +3,7 @@
 typedef long long ll;
 
 struct treap {
-	ll val, prior, size;
+	ll val, prior, size, side;
 	treap *l, *r;
 };
 
@@ -19,7 +19,7 @@ ll size(ptreap p){
 
 ll update_size(ptreap p){
 	if(p){
-		p->size = 1 + size(p->l) + size(p->r);
+		p->size = p->side + size(p->l) + size(p->r);
 	}
 }
 
@@ -62,23 +62,22 @@ ll count(ptreap pos, ll val){
 	}
 }
 
-const ll maxn = 500005;
-ptreap pos[maxn], neg[maxn];
+ptreap init(ll val, ll prior, ll side){
+	ptreap curr = new treap;
+	curr->val = val;
+	curr->prior = prior;
+	curr->size = side;
+	curr->side = side;
+	curr->l = NULL;
+	curr->r = NULL;
 
-ptreap init(ll ind, ll val, ll prior){
-	pos[ind] = new treap;
-	pos[ind]->val = val;
-	pos[ind]->prior = prior;
-	pos[ind]->size = 1;
-	pos[ind]->l = NULL;
-	pos[ind]->r = NULL;
-
-	return pos[ind];
+	return curr;
 }
 
+const ll maxn = 500005;
 ll curr = 1;
-ll other = maxn - 1;
 
+ptreap pos[maxn];
 std::unordered_map<ll, ll> m;
 
 void initialize(ll n, ll m){
@@ -94,9 +93,8 @@ void update(ll x, ll y1, ll y2){
 		curr++;
 	}
 
-	insert(pos[ind], init(other, y1, rand()));
-	insert(neg[ind], init(other, y2 + 1, rand()));
-	other--;
+	insert(pos[ind], init(y1, rand(), 1));
+	insert(pos[ind], init(y2 + 1, rand(), -1));
 }
 
 ll query(ll x, ll y){
@@ -105,7 +103,7 @@ ll query(ll x, ll y){
 	if(ind == 0){
 		return 0;
 	} else {
-		return count(pos[ind], y + 1) - count(neg[ind], y + 1);
+		return count(pos[ind], y + 1);
 	}
 }
 
