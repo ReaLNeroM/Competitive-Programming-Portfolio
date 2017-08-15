@@ -71,9 +71,9 @@ int main(){
 		}
 	}
 
-	double sum = 0.0;
+	long double sum = 0.0;
 	for(ll i = 0; i < v.size(); i++){
-		sum += std::sqrt((double) v[i][0]);
+		sum += std::sqrt((long double) v[i][0]);
 	}
 
 	std::cout.precision(5);
