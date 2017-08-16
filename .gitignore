@@ -1,6 +1,7 @@
 *.o
 */.settings
 */Debug/*
+Mendo/*
 *.kate-swp
 .metadata
 .directory
