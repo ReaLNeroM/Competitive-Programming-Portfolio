@@ -17,7 +17,6 @@ int main(){
 	std::cin >> n;
 
 	std::map<ll, int> times;
-	std::map<ll, int> visible;
 
 	int sum = 0;
 	for(int i = 0; i < n; i++){
@@ -35,8 +34,8 @@ int main(){
 			times[hash(ind, i)]++;
 
 			if(j == 0){
-				visible[hash(i, ind)]++;
-				visible[hash(ind, i)]++;
+				times[hash(i, ind)]--;
+				times[hash(ind, i)]--;
 			}
 		}
 	}
@@ -45,16 +44,17 @@ int main(){
 		std::cout << -1 << '\n';
 		return 0;
 	}
+	
 	sum /= 2;
 
 	std::vector<std::vector<int>> e;
 
 	std::queue<std::vector<int>> q;
 	for(int i = 0; i < n; i++){
-		if(!v[i].empty() and visible[hash(i, v[i][0])] == times[hash(i, v[i][0])]){
+		if(!v[i].empty() and times[hash(i, v[i][0])] == 0){
 			q.push({i, 0});
-			times[hash(i, v[i][0])] = 0;
-			times[hash(v[i][0], i)] = 0;
+			times[hash(i, v[i][0])] = -1;
+			times[hash(v[i][0], i)] = -1;
 		}
 	}
 
@@ -70,31 +70,36 @@ int main(){
 		curr_ind[frind] = frpos + 1;
 		q.pop();
 
-		times[hash(frind, v[frind][frpos])] = 0;
-		times[hash(v[frind][frpos], frind)] = 0;
+		times[hash(frind, v[frind][frpos])] = -1;
+		times[hash(v[frind][frpos], frind)] = -1;
 
 		e.push_back({frind + 1, v[frind][frpos] + 1});
-		frpos++;
 
-		if(frpos != v[frind].size()){
-			visible[hash(frind, v[frind][frpos])]++;
-			visible[hash(v[frind][frpos	], frind)]++;
-			if(visible[hash(frind, v[frind][frpos])] == times[hash(frind, v[frind][frpos])]){
+		if(frpos + 1 != v[frind].size()){
+		    curr_ind[frind] = frpos + 1;
+		    frpos += 1;
+		    
+			times[hash(frind, v[frind][frpos])]--;
+			times[hash(v[frind][frpos], frind)]--;
+			
+			if(times[hash(frind, v[frind][frpos])] == 0){
 				q.push({frind, frpos});
-				times[hash(frind, v[frind][frpos])] = 0;
-				times[hash(v[frind][frpos], frind)] = 0;
+				
+				times[hash(frind, v[frind][frpos])] = -1;
+				times[hash(v[frind][frpos], frind)] = -1;
 			}
 		}
 		if(curr_ind[other] + 1 != v[other].size()){
 			curr_ind[other]++;
-			visible[hash(other, v[other][curr_ind[other]])]++;
-			visible[hash(v[other][curr_ind[other]], other)]++;
+			
+			times[hash(other, v[other][curr_ind[other]])]--;
+			times[hash(v[other][curr_ind[other]], other)]--;
 
-			if(visible[hash(other, v[other][curr_ind[other]])] == times[hash(other, v[other][curr_ind[other]])]){
+			if(times[hash(other, v[other][curr_ind[other]])] == 0){
 				q.push({other, curr_ind[other]});
 
-				visible[hash(other, v[other][curr_ind[other]])] = 0;
-				visible[hash(v[other][curr_ind[other]], other)] = 0;
+				times[hash(other, v[other][curr_ind[other]])] = -1;
+				times[hash(v[other][curr_ind[other]], other)] = -1;
 			}
 		}
 	}
