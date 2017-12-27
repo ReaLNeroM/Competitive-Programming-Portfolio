@@ -36,7 +36,7 @@ int main(){
 			a = a + b;
 			if(a < maxn){
 				if(gccd[a][b] != x){
-					cout << "SHIT" << endl;
+					cout << "NOPE" << endl;
 					return 0;
 				}
 				if(!used[a][b]){
@@ -49,7 +49,7 @@ int main(){
 			b = a + b;
 			if(b < maxn){
 				if(gccd[a][b] != x){
-					cout << "SHIT" << endl;
+					cout << "NOPE" << endl;
 					return 0;
 				}
 				if(!used[a][b]){
