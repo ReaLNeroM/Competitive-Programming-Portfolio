@@ -202,7 +202,7 @@ int main(){
  
     for(int i = 0; i < n; i++){
         if(!filled[i]){
-            std::cout << res_for[i] << ' ' << i << '\n';
+            std::cerr << res_for[i] << ' ' << i << '\n';
             if(res < res_for[i]){
                 res = res_for[i];
                 res_amount = 1;
