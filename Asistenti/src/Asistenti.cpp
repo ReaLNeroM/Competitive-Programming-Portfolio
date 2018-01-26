@@ -149,7 +149,7 @@ void dfs5(int pos, int par, bool up_allowed = true){
                 }
             }
         } else {
-            if(arrow[pos].size() >= 4){
+            if(arrow[pos].size() >= 3){
                 return;
             } else {
                 int imp = arrow[pos].size();
@@ -202,6 +202,7 @@ int main(){
  
     for(int i = 0; i < n; i++){
         if(!filled[i]){
+            std::cout << res_for[i] << ' ' << i << '\n';
             if(res < res_for[i]){
                 res = res_for[i];
                 res_amount = 1;
