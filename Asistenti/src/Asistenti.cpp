@@ -84,6 +84,9 @@ void dfs2(int pos, int par, int best_above){
             if(best_above == best){
                 arrow[pos].push_back(i);
             }
+            if(best_above == best2){
+                sec[pos].push_back(i);
+            }
         }
     }
 }
@@ -202,7 +205,7 @@ int main(){
  
     for(int i = 0; i < n; i++){
         if(!filled[i]){
-            std::cerr << res_for[i] << ' ' << i << '\n';
+            // std::cerr << res_for[i] << ' ' << i << '\n';
             if(res < res_for[i]){
                 res = res_for[i];
                 res_amount = 1;
