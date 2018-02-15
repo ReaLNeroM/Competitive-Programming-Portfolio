@@ -15,6 +15,7 @@
 					<Add option="-std=c++14" />
 					<Add option="-g" />
 					<Add option="-DSFML_STATIC" />
+					<Add option="-DGLEW_STATIC" />
 					<Add directory="../../../../../Program Files (x86)/CodeBlocks/include" />
 				</Compiler>
 				<Linker>
@@ -23,6 +24,9 @@
 					<Add library="sfml-audio-d" />
 					<Add library="sfml-network-d" />
 					<Add library="sfml-system-d" />
+					<Add library="glew32s" />
+					<Add library="glu32" />
+					<Add library="opengl32" />
 					<Add directory="../../../../../Program Files (x86)/CodeBlocks/lib" />
 				</Linker>
 			</Target>
@@ -54,7 +58,21 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="glew32.dll" />
+		<Unit filename="glewinfo.exe" />
 		<Unit filename="main.cpp" />
+		<Unit filename="openal32.dll" />
+		<Unit filename="sfml-audio-2.dll" />
+		<Unit filename="sfml-audio-d-2.dll" />
+		<Unit filename="sfml-graphics-2.dll" />
+		<Unit filename="sfml-graphics-d-2.dll" />
+		<Unit filename="sfml-network-2.dll" />
+		<Unit filename="sfml-network-d-2.dll" />
+		<Unit filename="sfml-system-2.dll" />
+		<Unit filename="sfml-system-d-2.dll" />
+		<Unit filename="sfml-window-2.dll" />
+		<Unit filename="sfml-window-d-2.dll" />
+		<Unit filename="visualinfo.exe" />
 		<Extensions>
 			<code_completion />
 			<envvars />
