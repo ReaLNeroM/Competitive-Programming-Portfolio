@@ -13,8 +13,7 @@ int holes = 0;
 int n;
 int most = 0;
 
-void dfs(int made){
-	std::cout << made << std::endl;
+void dfs(int made){	
 	if(made == holes){
 		for(int i = 0; i < n * n; i++){
 			for(int j = 0; j < n * n; j++){
