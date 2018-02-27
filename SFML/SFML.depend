@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1518314248 source:c:\users\vladimir\documents\workspace\sfml\main.cpp
-	<SFML/Graphics.hpp>
-	<SFML/System/Time.hpp>
+1519761060 source:c:\users\vladimir\documents\workspace\sfml\main.cpp
 	<iostream>
+	<vector>
+	<SFML/Graphics.hpp>
 
 1486736397 c:\program files (x86)\codeblocks\include\sfml\graphics.hpp
 	<SFML/Window.hpp>
