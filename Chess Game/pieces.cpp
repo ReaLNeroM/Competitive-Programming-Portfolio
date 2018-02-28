@@ -57,7 +57,9 @@ namespace Pieces {
 			x.setPosition(sf::Vector2f(y * Magic::cell_size));
 			std::swap(board[y.y][y.x], x);
 		} else {
-			x.setPosition(start);
+			board[y.y][y.x].setTexture(pieces[0][0]);
+			x.setPosition(sf::Vector2f(y * Magic::cell_size));
+			std::swap(board[y.y][y.x], x);
 		}
 	}
 }
