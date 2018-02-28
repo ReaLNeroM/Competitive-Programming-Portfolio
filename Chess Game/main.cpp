@@ -3,87 +3,68 @@
 #include <cstdlib> 
 
 #include <SFML/Graphics.hpp>
+#include "magic.h"
+#include "helper.h"
+#include "pieces.h"
 
-const int size = 720;
-const int board_size = 8;
-const int cell_size = size / board_size;
+int main(){
+	sf::RenderWindow window(sf::VideoMode(Magic::size, Magic::size), "It Works!");
+	window.setFramerateLimit(60);
 
-sf::Vector2f get_indices(int x, int y){
-    if(0 <= x and x < size and 0 <= y and y < size){
-        return sf::Vector2f((x / cell_size) * cell_size, (y / cell_size) * cell_size);
-    } else {
-        return sf::Vector2f(-1, -1);
-    }
-}
+	Pieces::init();
 
-int main()
-{
-    sf::RenderWindow window(sf::VideoMode(size, size), "It Works!");
-    window.setFramerateLimit(60);
+	sf::Texture board_image;
+	board_image.loadFromFile("Images/board.png");
+	sf::Sprite board;
+	board.setTexture(board_image, true);
+	board.setPosition(0.f, 0.f);
+	board.setScale((double) Magic::size / board_image.getSize().x, 
+					(double) Magic::size / board_image.getSize().y);
 
-    sf::Texture board_image, pawn_image;
-    if(!board_image.loadFromFile("board.png")){
-        std::cerr << "SMOTAN";
-        return -1;
-    }
-    if(!pawn_image.loadFromFile("pawn.png")){
-        std::cerr << "SMOTAN";
-        return -1;
-    }
-    sf::Sprite board, pawn;
-    board.setTexture(board_image, true);
-    board.setPosition(0.f, 0.f);
-    board.setScale((double) size / board_image.getSize().x, 
-                    (double) size / board_image.getSize().y);
-    pawn.setTexture(pawn_image, true);
-    pawn.setPosition(0.f, 0.f);
-    pawn.setScale((double) cell_size / pawn_image.getSize().x,
-                    (double) cell_size / pawn_image.getSize().y);
+	int click_state = 0;
+	sf::Sprite *held = NULL;
+	sf::Vector2f held_coord(0, 0);
 
+	while (window.isOpen()){
+		sf::Event event;
+		auto mouse_location = sf::Mouse::getPosition(window);
+		while (window.pollEvent(event)){
+			if (event.type == sf::Event::Closed){
+				window.close();
+			} else if(event.type == sf::Event::MouseButtonPressed){
+				if(event.mouseButton.button == sf::Mouse::Left){
+					click_state = 1;
+					held = Pieces::find(mouse_location);
+					held_coord = held->getPosition();
+				}
+			} else if(event.type == sf::Event::MouseButtonReleased){
+				if(click_state != 1 or held == NULL){
+					std::cerr << "Release with no press" << '\n';
+					return -1;
+				}
 
-    int click_state = 0;
-    sf::Sprite *held = NULL;
+				Pieces::move(*held, held_coord, Helper::get_indices(mouse_location));
+				// held->setPosition(sf::Vector2f(Helper::get_location(sf::Vector2i(mouse_location.x, mouse_location.y))));
 
-    while (window.isOpen()){
-        sf::Event event;
-        auto mouse_location = sf::Mouse::getPosition(window);
-        while (window.pollEvent(event)){
-            if (event.type == sf::Event::Closed){
-                window.close();
-            } else if(event.type == sf::Event::MouseButtonPressed){
-                if(event.mouseButton.button == sf::Mouse::Left){
-                    click_state = 1;
-                    held = &pawn;
-                }
-            } else if(event.type == sf::Event::MouseButtonReleased){
-                if(click_state != 1 or held == NULL){
-                    std::cerr << "Release with no press" << '\n';
-                    return -1;
-                }
+				click_state = 2;
+				held = NULL;
+			}
+		}
 
-                pawn.setPosition(get_indices(mouse_location.x, mouse_location.y));
-                // pawn.setPosition()
-                // place it where it is
+		if(click_state == 1){
+			if(held == NULL){
+				std::cerr << "Impossible" << '\n';
+				return -1;
+			}
 
-                click_state = 2;
-                held = NULL;
-            }
-        }
+			held->setPosition(mouse_location.x - Magic::cell_size / 2.0, mouse_location.y - Magic::cell_size / 2.0);
+		}
 
-        if(click_state == 1){
-            if(held == NULL){
-                std::cerr << "Impossible" << '\n';
-                return -1;
-            }
+		window.draw(board);
+		Pieces::draw(window);
 
-            held->setPosition(mouse_location.x - cell_size / 2.0, mouse_location.y - cell_size / 2.0);
-        }
+		window.display();
+	}
 
-        window.draw(board);
-        window.draw(pawn);
-
-        window.display();
-    }
-
-    return 0;
+	return 0;
 }
