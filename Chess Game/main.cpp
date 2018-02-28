@@ -14,7 +14,8 @@ int main(){
 	Pieces::init();
 
 	sf::Texture board_image;
-	board_image.loadFromFile("Images/board.png");
+	board_image.loadFromFile(Magic::board_string);
+
 	sf::Sprite board;
 	board.setTexture(board_image, true);
 	board.setPosition(0.f, 0.f);
@@ -44,7 +45,6 @@ int main(){
 				}
 
 				Pieces::move(*held, held_coord, Helper::get_indices(mouse_location));
-				// held->setPosition(sf::Vector2f(Helper::get_location(sf::Vector2i(mouse_location.x, mouse_location.y))));
 
 				click_state = 2;
 				held = NULL;

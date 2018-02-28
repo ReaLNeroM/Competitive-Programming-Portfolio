@@ -16,9 +16,23 @@ namespace Magic {
 	    {-1, -1, -1, -1, -1, -1, -1, -1},
 	    {-2, -3, -4, -5, -6, -4, -3, -2}
 	};
+
+	std::string board_string = "img/board.png";
 	
 	std::string location[][pieces] = {
-		{"Images/blank.png", "Images/white_pawn.png", "Images/white_rook.png", "Images/white_knight.png", "Images/white_bishop.png", "Images/white_queen.png", "Images/white_king.png"},
-		{"Images/blank.png", "Images/black_pawn.png", "Images/black_rook.png", "Images/black_knight.png", "Images/black_bishop.png", "Images/black_queen.png", "Images/black_king.png"}
+		{"img/blank.png", 
+			"img/white_pawn.png", 
+			"img/white_rook.png", 
+			"img/white_knight.png", 
+			"img/white_bishop.png", 
+			"img/white_queen.png",
+			 "img/white_king.png"},
+		{"img/blank.png", 
+			"img/black_pawn.png", 
+			"img/black_rook.png", 
+			"img/black_knight.png", 
+			"img/black_bishop.png", 
+			"img/black_queen.png", 
+			"img/black_king.png"}
 	};
 }

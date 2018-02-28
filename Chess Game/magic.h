@@ -10,5 +10,7 @@ namespace Magic {
 
 	extern int initial[8][8];
 	
+	extern std::string board_string;
+	
 	extern std::string location[2][7];
 }
