@@ -2,33 +2,35 @@
 
 typedef long long ll;
 
-const double eps = 0.000000001;
+const long double eps = 0.00000000001;
 
 std::map<int, ll> m;
 
-ll dfs(ll x){
+ll dfs(int x){
 	if(m[x] != 0){
 		return m[x];
 	}
 	ll res = 0;
 
 	ll highest_call = 1;
-	double last = x;
+	ll last = x;
 	for(ll i = 1; i * i <= x; i++){
-		double high = last;
-		high = std::floor(high + eps);
+		ll high = last;
 
-		last = (double) x / (i + 1.0);
-		double low = std::ceil(last + eps);
+		last = std::floor((long double) x / (i + 1.0) + eps);
 
-		int span = ((ll) (high + 0.1)) - ((ll) (low + 0.1)) + 1;
+		ll low = last;
 
-		int get = m[i];
+		// std::cerr << x << ' ' << i << ' ' << ((ll) (high + 0.1)) << ' ' << ((ll) (low + 0.1)) << '\n';
+
+		ll span = high - last;
+
+		ll get = m[i];
 		if(get == 0){
-			res += span * dfs(i);
-		} else {
-			res += span * get;
+			get = dfs(i);
 		}
+
+		res += span * get;
 		
 		highest_call = i;
 	}
@@ -40,7 +42,7 @@ ll dfs(ll x){
 			break;
 		}
 
-		int get = m[weight];
+		ll get = m[weight];
 		if(get == 0){
 			res += dfs(weight);
 		} else {
@@ -52,7 +54,7 @@ ll dfs(ll x){
 	return res;
 }
 
-ll brute(ll n){
+ll brute(int n){
 	ll val[n + 1];
 
 	val[1] = 1;
@@ -70,7 +72,7 @@ ll brute(ll n){
 int main(){
 	std::ios::sync_with_stdio(false);
 
-	ll n;
+	int n;
 	std::cin >> n;
 
 	m[1] = 1;

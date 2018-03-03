@@ -62,6 +62,9 @@ int main(){
 
 		window.draw(board);
 		Pieces::draw(window);
+		if(held != NULL){
+			window.draw(*held);
+		}
 
 		window.display();
 	}

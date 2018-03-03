@@ -12,7 +12,4 @@ namespace Helper {
 		v = get_indices(v);
 		return sf::Vector2i(v.x * Magic::cell_size, v.y * Magic::cell_size);
 	}
-	bool check_null_sprite(sf::Sprite x, sf::Texture *null){
-		return (x.getTexture() == null);
-	}
 }

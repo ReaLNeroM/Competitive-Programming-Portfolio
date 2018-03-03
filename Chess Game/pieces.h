@@ -7,6 +7,7 @@ namespace Pieces {
 	extern sf::Sprite board[8][8];
 	extern sf::Texture pieces[2][7];
 
+	bool check_null_sprite(sf::Sprite, sf::Texture*);
 	void init_textures();
 	void init();
 	sf::Sprite* find(sf::Vector2i);

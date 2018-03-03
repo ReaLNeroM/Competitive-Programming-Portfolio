@@ -5,6 +5,10 @@ namespace Pieces {
 	sf::Sprite board[8][8];
 	sf::Texture pieces[2][7];
 
+	bool check_null_sprite(sf::Sprite x, sf::Texture *null){
+		return (x.getTexture() == null);
+	}
+
 	void init_textures(){
 		for(int i = 0; i < 2; i++){
 			for(int j = 0; j < Magic::pieces; j++){
@@ -44,7 +48,7 @@ namespace Pieces {
 	void draw(sf::RenderWindow &window){
 		for(int i = 0; i < Magic::board_size; i++){
 			for(int j = 0; j < Magic::board_size; j++){
-				if(!Helper::check_null_sprite(board[i][j], &pieces[0][0])){
+				if(!check_null_sprite(board[i][j], &pieces[0][0])){
 					window.draw(board[i][j]);
 				}
 			}
@@ -52,7 +56,12 @@ namespace Pieces {
 	}
 
 	bool move(sf::Sprite& x, sf::Vector2f start, sf::Vector2i y){
-		if(Helper::check_null_sprite(board[y.y][y.x], &pieces[0][0])){
+		if(&x == &board[y.y][y.x]){
+			x.setPosition(start);
+			return false;
+		}
+
+		if(check_null_sprite(board[y.y][y.x], &pieces[0][0])){
 			board[y.y][y.x].setPosition(start);
 			x.setPosition(sf::Vector2f(y * Magic::cell_size));
 			std::swap(board[y.y][y.x], x);
@@ -61,5 +70,7 @@ namespace Pieces {
 			x.setPosition(sf::Vector2f(y * Magic::cell_size));
 			std::swap(board[y.y][y.x], x);
 		}
+
+		return true;
 	}
 }
