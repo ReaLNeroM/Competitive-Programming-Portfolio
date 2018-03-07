@@ -15,7 +15,8 @@ int main() {
 		divisors.push_back(3);
 		n /= 3;
 	}
-	for(long long i = 6; i * 2 <= n; i += 6){
+
+	for(long long i = 6; (i + 1) * (i + 1) <= n; i += 6){
 		while(n % (i - 1) == 0){
 			n /= i - 1;
 			divisors.push_back(i - 1);

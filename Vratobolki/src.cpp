@@ -26,12 +26,12 @@ int main(){
 
 	ll res = 1e18;
 	for(int side = 0; side < 2; side++){
-		char chase;
-
-		if(side == 0){
-			chase = 'L';
-		} else {
-			chase = 'R';
+		for(char& i : s){
+			if(i == 'L'){
+				i = 'R';
+			} else if(i == 'R'){
+				i = 'L';
+			}
 		}
 
 		ll attempt = 0;
