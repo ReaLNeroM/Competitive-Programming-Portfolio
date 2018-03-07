@@ -26,6 +26,67 @@ int main(){
 
 	ll res = 1e18;
 	for(int side = 0; side < 2; side++){
+		ll attempt = 0;
+
+		std::deque<int> left, right;
+		std::deque<int> placeleft;
+		std::deque<int> ind;
+
+		int l = std::count(s.begin(), s.end(), 'L');
+
+		int l_pos = 0, r_pos = l - 1;
+		for(int i = l; i < n; i++){
+			while(l_pos < l and s[l_pos] == 'L'){
+				l_pos++;
+			}
+			while(r_pos >= 0 and s[r_pos] == 'L'){
+				r_pos--;
+			}
+
+			int l_cost = n - i + l_pos;
+			int r_cost = i - r_pos;
+			if(l_cost < r_cost){
+				attemt += l_cost;
+				left.push_front(i);
+				placeleft.push_front(l_pos);
+				ind.push_front(0);
+				l_pos++;
+			} else {
+				attemt += r_cost;
+				right.push_back(i);
+				r_pos++;
+			}
+		}
+
+		for(int start = 0; start + l < n; start++){
+			res = std::min(res, attempt);
+
+			if(s[start] == 'L'){
+				left.push_front(start);
+				placeleft.push_front()
+			}
+
+			attempt += left.size();
+			attempt -= right.size();
+			if(s[start + l] == 'L'){
+				right.pop_front();
+			}
+
+			while(!left.empty()){
+				int get = left.back();
+				int place = placeleft;
+				if(place > n - place){
+					right.push_back(get);
+					left.pop_front();
+					attempt -= place - (n - place);
+				} else {
+					break;
+				}
+			}
+		}
+
+		res = std::min(res, attempt);
+		
 		for(char& i : s){
 			if(i == 'L'){
 				i = 'R';
@@ -33,28 +94,7 @@ int main(){
 				i = 'L';
 			}
 		}
-
-		ll attempt = 0;
-
-		std::deque<int> left, right;
-
-		for(int i = 0; i < n; i++){
-			if(s[i] == chase){
-				attempt += (i + 1 - (int) right.size());
-				right.push_back(i);
-			}
-		}
-
-		int size = right.size();
-		for(int i = 0; i + right.size <= n; i++){
-			//try to swap into left
-			res = std::min(res, attempt);
-
-			//change this from right into left pos
-
-			//do maths
-		}
 	}
 
-	std::cout << res;
+	std::cout << 1 << ' ' << res << '\n';
 }
