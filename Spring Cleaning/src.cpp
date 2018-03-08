@@ -26,45 +26,53 @@ int main(){
 	std::fill(par, par + n, -1);
 	std::fill(visited, visited + n, -1);
 
-	for(int i = 0; i < n; i++){
+	for(int i = 0; i < n; i++){  //set up par, loop, and visited
 		if(visited[i] == -1){
-			visited[i] = i;
 			int curr = i;
-			while(par[p[curr]] == -1){
-				par[p[curr]] = curr;
-				curr = p[curr];
+
+			while(visited[curr] == -1){
+				if(par[p[curr]] == -1){
+					par[p[curr]] = curr;
+				}
 				visited[curr] = i;
+				curr = p[curr];
 			}
 
-			if(loop[curr] or loop[p[curr]] or visited[p[curr]] != i){
+			if(visited[curr] != i){
 				continue;
 			}
 
-			int loop_start = p[curr];
-
-			do {
+			while(!loop[curr]){
 				loop[curr] = true;
 				curr = p[curr];
-			} while(!loop[curr]);
+			}
 		}
 	}
 
-	std::vector<std::vector<int>> res;
-	for(int i = 0; i < n; i++){
-		if(loop[i] and rev[i].size() >= 2 and !killed[i]){
+	std::deque<std::vector<int>> res;
+
+	for(int i = 0; i < n; i++){ //start killing loop at branch point, if needed
+		if(loop[i] and rev[i].size() >= 2 and !killed[i] and !killed[p[i]]){
 			int curr = i;
 			while(p[curr] != i){
+				res.push_front({curr, p[curr]});
+				killed[p[curr]] = true;
 				curr = p[curr];
 			}
-
-			do {
-				res.push_back({par[curr], curr});
-				curr = par[curr];
-			} while(curr != i);
+		}
+	}
+	for(int i = 0; i < n; i++){ //start killing loop wherever
+		if(loop[i] and !killed[i] and !killed[p[i]]){
+			int curr = i;
+			while(p[curr] != i){
+				res.push_front({curr, p[curr]});
+				killed[p[curr]] = true;
+				curr = p[curr];
+			}
 		}
 	}
 
-	for(int i = 0; i < n; i++){
+	for(int i = 0; i < n; i++){ //if a tree branches out from a loop node, propagate backwards
 		if(loop[i] and rev[i].size() >= 2){
 			std::queue<int> q;
 			q.push(i);
@@ -75,7 +83,7 @@ int main(){
 
 				for(int next : rev[fr]){
 					if(!loop[next]){
-						if(!killed[fr] and !killed[next]){
+						if(!killed[fr]){
 							res.push_back({next, fr});
 							killed[fr] = true;
 						}
@@ -91,3 +99,4 @@ int main(){
 		std::cout << i[0] + 1 << ' ' << i[1] + 1 << '\n';
 	}
 }
+	
