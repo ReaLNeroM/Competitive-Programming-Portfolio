@@ -5,18 +5,24 @@ typedef long long ll;
 int main(){
 	std::ios::sync_with_stdio(false);
 
-	ll n, q;
+	int n, q;
 	std::cin >> n >> q;
 
 	for(int i = 0; i < q; i++){
-		ll ind;
+		int ind;
 		std::cin >> ind;
 
-		while(ind % 2 == 0){
-			ind += n - ind / 2;
+		int jump = 2 * (n - ind) + 1;
+
+		ind = 2 * ind - 1;
+
+		while(ind - jump >= 1){
+			ind -= jump;
+
+			int after = (2 * n - 1 - ind) / 2;
+			jump = 2 * after + 2;
 		}
 
-		ll res = ind / 2 + ind % 2;
-		std::cout << res << '\n';
+		std::cout << ind << '\n';
 	}
 }
