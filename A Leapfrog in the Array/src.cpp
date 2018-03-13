@@ -12,15 +12,8 @@ int main(){
 		int ind;
 		std::cin >> ind;
 
-		int jump = 2 * (n - ind) + 1;
-
-		ind = 2 * ind - 1;
-
-		while(ind - jump >= 1){
-			ind -= jump;
-
-			int after = (2 * n - 1 - ind) / 2;
-			jump = 2 * after + 2;
+		while(ind % 2 == 0){
+			ll left = (ind - 2) / 2;
 		}
 
 		std::cout << ind << '\n';
