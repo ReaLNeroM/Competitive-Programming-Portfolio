@@ -32,12 +32,13 @@ int main() {
 		std::cin >> first >> second;
 
 		e[first - 1].push_back(second - 1);
+		e[second - 1].push_back(first - 1);
+		
 		if(e[first - 1].size() % 2 == 1){
 			wrong++;
 		} else {
 			wrong--;
 		}
-		e[second - 1].push_back(first - 1);
 		if(e[second - 1].size() % 2 == 1){
 			wrong++;
 		} else {
