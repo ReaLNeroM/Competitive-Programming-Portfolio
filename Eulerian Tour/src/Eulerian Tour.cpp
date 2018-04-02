@@ -21,7 +21,7 @@ void findpath(int pos){
 }
 
 int main() {
-	int vertices,  edges;
+	int vertices, edges;
 	std::cin >> vertices >> edges;
 
 	e.resize(vertices);
