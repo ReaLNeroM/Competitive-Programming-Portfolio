@@ -15,7 +15,7 @@ ll dfsxor(ll pos, ll bitset){
 		ll& ans = dpxor[pos][bitset];
 		ans = 0;
 
-		if((parity[fullset ^ bitset] & (1 << pos)) == 0){
+		if((parity[(1 << n) & (fullset ^ bitset)] & (1 << pos)) == 0){
 			if(bitset == 0){
 				ans = 1;
 			} else {
@@ -29,6 +29,16 @@ ll dfsxor(ll pos, ll bitset){
 	}
 
 	return dpxor[pos][bitset];
+}
+
+ll get_biggest(ll bitset){
+	for(ll j = 1; j <= bitset; j *= 2){
+		if(j * 2 > bitset){
+			return j;
+		}
+	}
+
+	return -1;
 }
 
 int main(){
@@ -51,34 +61,30 @@ int main(){
 			bitset += val[j] - '0';
 		}
 
-		parity[bitset] = bitset;
+		ll biggest_bit = get_biggest(bitset);
+
+		parity[(biggest_bit * 2) | bitset] = bitset;
 	}
 
 
-	for(ll i = 1; i < (1 << n); i++){
-		for(ll j = 1; j < (1 << n); j *= 2){
-			if((i & j) == 0){
-				for(ll k = 1; k < j; k *= 2){
-					if((i & k) == 0 and j != k){
-						parity[i ^ j ^ k] ^= parity[i];
-					}
-				}
-				
-				parity[i ^ j] ^= parity[i];
+	for(ll bitset = 2; bitset < (1 << n); bitset++){
+		ll biggest_bit = get_biggest(bitset);
+		parity[ bitset                | (biggest_bit * 2)] ^= parity[bitset];
+		parity[(bitset ^ biggest_bit) | (biggest_bit * 2)] ^= parity[bitset];
+	}
+
+	for(int i = 0; i < (1 << (n + 1)); i++){
+		int generated_bitset = 0;
+		for(int pow10 = 1, bit = 1; bit <= i; pow10 *= 10, bit *= 2){
+			if(i & bit){
+				generated_bitset += pow10;
 			}
 		}
+		std::cout << generated_bitset << ' ' << parity[i] << '\n';
 	}
-// 	for(ll i = fullset; i >= 1; i--){
-// 		for(ll j = i + 1; j < (1 << n); j++){
-// 			if((i & j) == i){
-// 				parity[j] ^= parity[i];
-// 			}
-// 		}
-// 	}
-
 	std::memset(dpxor, -1, sizeof(dpxor));
 
-	ll res = 0;
+	ll res = 0;////////////
 
 	for(ll i = 0; i < n; i++){
 		if(parity[(1 << i)] & (1 << i)){
