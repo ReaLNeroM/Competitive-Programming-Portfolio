@@ -2,27 +2,36 @@
 
 typedef long long ll;
 
+const int maxn = 2e5 + 1e2;
 int n;
+std::string s;
+int pre[maxn];
+int suf[maxn];
+int found[maxn];
+int suffound[maxn];
 
 bool within(int a, int l, int r){
 	return l <= a and a <= r;
 }
 
-template <class T>
-T dist(T a, T b){
-	if(a > b){
-		std::swap(a, b);
-	}
+double below(ll a, ll b){
+	double res = pre[b + 1] - pre[a];
+	res -= found[a] * (double) (b - a);
 
-	return std::min(b - a, a + n - b);
+	return res;
+}
+
+double above(ll a, ll b){
+	double res = suf[a - 1] - suf[b];
+	res -= (double) suffound[b] * (b - a + 1);
+
+	return res;
 }
 
 int main(){
 	std::ios::sync_with_stdio(false);
 
 	std::cin >> n;
-
-	std::string s;
 	std::cin >> s;
 
 	bool same = true;
@@ -38,27 +47,55 @@ int main(){
 		return 0;
 	}
 
-	ll res = 1e18;
-	ll best_position = 0;
-	ll attempt = 0;
+	double res = 1e18;
 
 	for(int side = 0; side < 2; side++){
 		int l_count = std::count(s.begin(), s.end(), 'L');
 
-		std::vector<int> crips, bloods;
-		int 
+		std::set<int> s_L;
+
+		found[0] = 0;
+
+		int running_count = 0;
+		pre[0] = 0;
 		for(int i = 0; i < 2 * n; i++){
-			if(s[i] == 'L'){
-				if()
+			pre[i + 1] = pre[i] + running_count;
+			if(s[i % n] == 'L'){
+				running_count++;
+				s_L.insert(i);
+			}
+			found[i + 1] = running_count;
+		}
+
+		running_count = 0;
+		suf[2 * n] = 0;
+		suffound[2 * n] = 0;
+		for(int i = 2 * n; i > 0; i--){
+			suf[i - 1] = suf[i] + running_count;
+			if(s[i % n] == 'L'){
+				running_count++;
+			}
+			suffound[i - 1] = running_count;
+		}
+
+		for(int i = 0; i < n; i++){
+			//start from here
+			double l = i, r = i + n - 1;
+			for(int j = 0; j < 50; j++){
+				double mid = (l + r) / 2.0;
+
+				double below_query = below(i, std::floor(mid));
+				double above_query = above(std::ceil(mid), i + n - 1);
+				res = std::min(res, below_query + above_query);
+
+				if(below_query < above_query){
+					l = mid;
+				} else {
+					r = mid;
+				}
 			}
 		}
-		//try to gather the Ls
-		for(int i = l_count - 1; i < s.size(); i++){
-			double position = (i + 1) / 2.0;
-			//gather the fuckers here
 
-			//check for changing sides
-		}
 
 		for(int i = 0; i < s.size(); i++){
 			if(s[i] == 'L'){
