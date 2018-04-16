@@ -2,10 +2,24 @@
 
 typedef long long ll;
 
+int n;
+
+bool within(int a, int l, int r){
+	return l <= a and a <= r;
+}
+
+template <class T>
+T dist(T a, T b){
+	if(a > b){
+		std::swap(a, b);
+	}
+
+	return std::min(b - a, a + n - b);
+}
+
 int main(){
 	std::ios::sync_with_stdio(false);
 
-	int n;
 	std::cin >> n;
 
 	std::string s;
@@ -25,36 +39,35 @@ int main(){
 	}
 
 	ll res = 1e18;
+	ll best_position = 0;
+	ll attempt = 0;
+
 	for(int side = 0; side < 2; side++){
-		for(char& i : s){
-			if(i == 'L'){
-				i = 'R';
-			} else if(i == 'R'){
-				i = 'L';
+		int l_count = std::count(s.begin(), s.end(), 'L');
+
+		std::vector<int> crips, bloods;
+		int 
+		for(int i = 0; i < 2 * n; i++){
+			if(s[i] == 'L'){
+				if()
 			}
 		}
+		//try to gather the Ls
+		for(int i = l_count - 1; i < s.size(); i++){
+			double position = (i + 1) / 2.0;
+			//gather the fuckers here
 
-		ll attempt = 0;
-
-		std::deque<int> left, right;
-
-		for(int i = 0; i < n; i++){
-			if(s[i] == chase){
-				attempt += (i + 1 - (int) right.size());
-				right.push_back(i);
-			}
+			//check for changing sides
 		}
 
-		int size = right.size();
-		for(int i = 0; i + right.size <= n; i++){
-			//try to swap into left
-			res = std::min(res, attempt);
-
-			//change this from right into left pos
-
-			//do maths
+		for(int i = 0; i < s.size(); i++){
+			if(s[i] == 'L'){
+				s[i] = 'R';
+			} else {
+				s[i] = 'L';
+			}
 		}
 	}
 
-	std::cout << res;
+	std::cout << 1 << ' ' << res << '\n';
 }
