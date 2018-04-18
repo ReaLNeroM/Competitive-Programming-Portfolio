@@ -49,59 +49,44 @@ int main(){
 
 	double res = 1e18;
 
-	for(int side = 0; side < 2; side++){
-		int l_count = std::count(s.begin(), s.end(), 'L');
+	int l_count = std::count(s.begin(), s.end(), 'L');
 
-		std::set<int> s_L;
-
-		found[0] = 0;
-
-		int running_count = 0;
-		pre[0] = 0;
-		for(int i = 0; i < 2 * n; i++){
-			pre[i + 1] = pre[i] + running_count;
-			if(s[i % n] == 'L'){
-				running_count++;
-				s_L.insert(i);
-			}
-			found[i + 1] = running_count;
+	int running_count = 0;
+	pre[0] = 0;
+	for(int i = 0; i < 2 * n; i++){
+		pre[i + 1] = pre[i] + running_count;
+		if(s[i % n] == 'L'){
+			running_count++;
+			s_L.insert(i);
 		}
+		found[i + 1] = running_count;
+	}
 
-		running_count = 0;
-		suf[2 * n] = 0;
-		suffound[2 * n] = 0;
-		for(int i = 2 * n; i > 0; i--){
-			suf[i - 1] = suf[i] + running_count;
-			if(s[i % n] == 'L'){
-				running_count++;
-			}
-			suffound[i - 1] = running_count;
+	running_count = 0;
+	suf[2 * n] = 0;
+	suffound[2 * n] = 0;
+	for(int i = 2 * n; i > 0; i--){
+		suf[i - 1] = suf[i] + running_count;
+		if(s[i % n] == 'L'){
+			running_count++;
 		}
+		suffound[i - 1] = running_count;
+	}
 
-		for(int i = 0; i < n; i++){
-			//start from here
-			double l = i, r = i + n - 1;
-			for(int j = 0; j < 50; j++){
-				double mid = (l + r) / 2.0;
+	for(int i = 0; i < n; i++){
+		//start from here
+		double l = i, r = i + n - 1;
+		for(int j = 0; j < 50; j++){
+			double mid = (l + r) / 2.0;
 
-				double below_query = below(i, std::floor(mid));
-				double above_query = above(std::ceil(mid), i + n - 1);
-				res = std::min(res, below_query + above_query);
+			double below_query = below(i, std::floor(mid));
+			double above_query = above(std::ceil(mid), i + n - 1);
+			res = std::min(res, below_query + above_query);
 
-				if(below_query < above_query){
-					l = mid;
-				} else {
-					r = mid;
-				}
-			}
-		}
-
-
-		for(int i = 0; i < s.size(); i++){
-			if(s[i] == 'L'){
-				s[i] = 'R';
+			if(below_query < above_query){
+				l = mid;
 			} else {
-				s[i] = 'L';
+				r = mid;
 			}
 		}
 	}
