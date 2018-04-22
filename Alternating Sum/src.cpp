@@ -43,13 +43,13 @@ ll calculate_expression(ll a, ll b, ll n, ll k, ll start){
 	ll second_number = pow((b * inverse(a)) % mod, n + 1) + mod - 1;
 	ll third_number = inverse(pow((b * inverse(a)) % mod, k) + mod - 1);
 
-	if(third_number == 0){
-		return roll(((n + 1) / k) * first_number);
-	}
-
 	first_number = roll(first_number);
 	second_number = roll(second_number);
 	third_number = roll(third_number);
+
+	if(third_number == 0){
+		return roll(((n + 1) / k) * first_number);
+	}
 
 	generated_expression = roll(generated_expression * first_number);
 	generated_expression = roll(generated_expression * second_number);
