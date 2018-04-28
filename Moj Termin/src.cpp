@@ -15,6 +15,7 @@ int main(){
     for(int i = 0; i < n; i++){
         std::string c;
         std::cin >> c;
+
         if(c == "N"){
             val[i] = -1;
         } else {
@@ -36,6 +37,7 @@ int main(){
             } else if(found_expected == -1){
                 found_expected = val[j];
             }
+        
             if(found_expected == -1 or found_expected == size){
                 dp[i] += dp[j + 1];
                 dp[i] = std::min(dp[i], 2);
@@ -43,10 +45,6 @@ int main(){
         }
  
         dp[i] = std::min(dp[i], 2);
-    }
- 
-    for(int i = 0; i < n; i++){
-        std::cerr << i << ' ' << dp[i] << '\n';
     }
  
     if(dp[0] == 1){
