@@ -3,40 +3,11 @@
 typedef long long ll;
  
 const ll maxpiva = 1e3 + 1e2;
-const ll maxn = 6000001;
 ll budget, order;
 ll n;
 std::vector<std::vector<ll> > piva;
-ll dp[maxn];
 ll partial_sum[maxpiva];
 ll ke_ides_do[maxpiva];
- 
-ll brute(){
-    ll best = 0;
- 
-    dp[0] = order;
- 
-    ll one_side = 1;
-    for(ll j = 1; j <= budget; j++){
-        dp[j] = budget + 1;
- 
-        for(ll i = 0; i < piva.size(); i++){
-            if(piva[i][0] >= j){
-                dp[j] = std::min(dp[j], dp[j - 1] + piva[i][1]);
-            } else {
-                dp[j] = std::min(dp[j], dp[j - piva[i][0]] + dp[piva[i][0]]);
-            }
-        }
- 
-        if(dp[j] <= budget){
-            best = std::max(best, j);
-        } else {
-            break;
-        }
-    }
- 
-    return best;
-}
  
 ll smart(){
     ll best = 0;
@@ -93,9 +64,7 @@ ll smart(){
 int main(){
     std::ios::sync_with_stdio(false);
  
-    std::cin >> budget >> order;
- 
-    std::cin >> n;
+    std::cin >> budget >> order >> n;
  
     piva.resize(n);
     for(ll i = 0; i < n; i++){
@@ -118,9 +87,5 @@ int main(){
  
     n = piva.size();
  
-    if(budget > 5000000){
-        std::cout << smart() << '\n';
-    } else {
-        std::cout << brute() << '\n';
-    }
+	std::cout << smart() << '\n';
 }
