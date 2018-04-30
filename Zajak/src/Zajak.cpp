@@ -21,6 +21,8 @@ int main() {
         dp[0][i] = dp[0][0] + val[0][i];
     }
 
+    dp[0][0] = -INF;
+
     for(long long i = 1; i <= y - 1; i++){
         long long biggest[2], biggestpos[2];
         biggest[0] = biggest[1] = 0;
@@ -42,10 +44,8 @@ int main() {
         for(long long j = 0; j < x; j++){
             if(biggestpos[0] != j){
                 dp[i][j] = biggest[0] + val[i][j];
-            } else if(biggestpos[1] != j){
-                dp[i][j] = biggest[1] + val[i][j];
             } else {
-                dp[i][j] = -INF;
+                dp[i][j] = std::max(biggest[0], biggest[1] + val[i][j]);
             }
         }
     }

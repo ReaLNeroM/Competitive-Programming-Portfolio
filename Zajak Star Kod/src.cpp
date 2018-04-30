@@ -28,7 +28,7 @@ int main()
                 bestskok[0] = res[i][j];
                 bestpos = j;
             } else if(bestskok[1] == 0 or res[i][j] > bestskok[1]){
-                bestskok[1] = res[i][j];
+                bestskok[1] = res[i][j]; // was j, this was THE BUG
             }
         }
         for(int j = 0; j < y; j++){
