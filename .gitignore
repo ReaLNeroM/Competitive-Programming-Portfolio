@@ -9,3 +9,4 @@ Mendo/*
 *.in
 *.sh
 *.exe
+*.h.gch
