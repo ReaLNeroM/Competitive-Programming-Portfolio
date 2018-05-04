@@ -5,27 +5,32 @@ typedef long long ll;
 const ll maxn = 35;
 ll n, t;
 ll val[maxn];
-ll best = 0;
+ll inter[maxn];
+std::vector<int> s[2][maxn];
 
-void dfs(ll pos, ll ups, ll sum){
+void dfs(ll pos, ll ups, ll sum, ll side, ll threshold, ll inc){
+    if(side == 0){
+    	sum += ups * inter[pos];
+    }
     if(sum > t){
-        return;
+    	return;
     }
 
-    best = std::max(best, sum);
-
-    if(pos + ups >= n - 1){
-        return;
+    if(pos == threshold){
+    	s[side][ups].push_back(sum);
+    	return;
     }
-
-    if(pos + ups + 1 < n - 1){
-        dfs(pos + 1, ups + 1, sum + val[pos + ups] - val[pos] + val[pos + ups + 1] - val[pos]);
+    if(side != 0){
+		sum += ups * inter[pos];
     }
-    if(pos + ups < n - 1){
-		dfs(pos + 1, ups    , sum + val[pos + ups] - val[pos]);
+    if(pos + inc + ups + 1 < n){
+        dfs(pos + inc, ups + 1, sum, side, threshold, inc);
+    }
+    if(pos + inc + ups     < n){
+        dfs(pos + inc, ups    , sum, side, threshold, inc);
     }
     if(ups != 0){
-		dfs(pos + 1, ups - 1, sum);
+        dfs(pos + inc, ups - 1, sum, side, threshold, inc);
     }
 } 
 
@@ -40,18 +45,48 @@ int main(){
     }
 
     std::sort(val, val + n);
- 
+
     for(int i = 0; i < n - 1; i++){
-        val[i + 1] -= val[0];
-        val[i + 1] *= 2;
+    	inter[i] = 2 * (val[i + 1] - val[i]);
+		start += inter[i];
     }
 
-    val[0] = 0;
-
-    start = val[n - 1];
     t -= start;
 
-    dfs(1, 0, 0);
+    ll breakpoint = n / 2;
 
-    std::cout << start + best << '\n';
+    dfs(0, 0, 0, 0, breakpoint, 1);
+    dfs(n - 2, 0, 0, 1, breakpoint, -1);
+
+  	int res = 0;
+
+  	for(int i = 0; i < n; i++){
+  		std::sort(s[0][i].begin(), s[0][i].end(), std::greater<int>());
+  		std::sort(s[1][i].begin(), s[1][i].end());
+  		auto sec = s[1][i].begin();
+
+  		if(s[0][i].empty() or s[1][i].empty()){
+  			continue;
+  		}
+
+  		for(auto ite = s[0][i].begin(); ite != s[0][i].end(); ite++){
+
+  			while(sec != s[1][i].end() and (sec + 1) != s[1][i].end()){
+  				auto thi = sec + 1;
+
+  				if(thi == s[1][i].end() or *ite + *thi > t){
+  					break;
+  				}
+
+  				sec = thi;
+
+  			}
+
+  			if(*ite + *sec <= t){
+				res = std::max(res, *ite + *sec);
+  			}
+  		}
+  	}
+
+    std::cout << start + res << '\n';
 }
