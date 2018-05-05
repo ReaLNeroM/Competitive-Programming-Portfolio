@@ -5,12 +5,6 @@ typedef long long ll;
 const ll maxn = 1e5 + 1e2;
 ll n, w, b, r;
 ll val[maxn][3];
-ll copy[maxn][3];
-ll ind[maxn][3];
-ll size[3];
-bool used[maxn][3];
-std::multiset<std::vector<ll> > taken[3];
-ll v[3];
 ll res = 0;
  
 int main(){
@@ -48,36 +42,26 @@ int main(){
 		res += biggest;
 	}
 
-	bool problem = true;
-	do {
-		problem = false;
-		for(ll j = 0; j < 3; j++){
-			while(size[j] > v[j]){
-				problem = true;
+	while(taken[0] > v[0] or taken[1] > v[1] or taken[2] > v[2]){
+		int above = 0;
+		int below = 0;
+		int aboveind = -1;
+		int belowind = -1;
 
-				if(taken[j].empty()){
-					//ne treba da se dese be
-					std::cerr << "WTF\n";
-					return 0;
-				}
-
-				std::vector<ll> vv = (*taken[j].begin());
-				taken[j].erase(taken[j].begin());
-				size[j]--;
-
-				res -= vv[0];
-
-				if(vv[1] == 2){
-					vv[1]--;
-					vv[0] = copy[vv[2]][vv[1]] - copy[vv[2]][vv[1] - 1];
-					taken[ind[vv[2]][vv[1]]].insert(vv);
-					size[ind[vv[2]][1]]++;
-				} else {
-					size[ind[vv[2]][0]]++;
-				}
+		for(int i = 0; i < 3; i++){
+			if(taken[i] > v[i]){
+				above++;
+				aboveind = i;
+			} else if(taken[i] < v[i]){
+				below++;
+				belowind = i;
 			}
 		}
-	} while(problem);
- 
-	std::cout << res;
+
+		if(above == 1){
+			//yo change it
+		} else if(below == 1){
+
+		}
+	}
 }
