@@ -20,7 +20,7 @@ public:
 		double best = 1e20;
 		double best_c = 0.0;
 
-		for(double c = 0.000; c < (a + b); c += 0.001){
+		for(double c = 0.000; c < (a + b); c += 0.00001){
 			double in_radius = get_in(a, b, c);
 			double out_radius = get_out(a, b, c);
 

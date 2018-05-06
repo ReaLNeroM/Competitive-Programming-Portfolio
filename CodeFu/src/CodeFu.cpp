@@ -20,7 +20,7 @@ class Sequence {
 
 	matrix mult(const matrix &x, const matrix &y){
 		matrix value;
-
+		
 		for(ll i = 0; i <= 50; i++){
 			for(ll j = 0; j <= 50; j++){
 				for(ll k = 0; k <= 50; k++){
@@ -46,7 +46,7 @@ public:
 		for(ll i = 0; i < k; i++){
 			if(i == 0){
 				for(ll j = 0; j < k; j++){
-					start.v[i][j] = coefficients[k - j - 1];
+					start.v[i][j] = coefficients[j];
 				}
 			} else {
 				start.v[i][i - 1] = 1;

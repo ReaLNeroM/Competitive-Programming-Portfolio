@@ -5,9 +5,7 @@ typedef long long ll;
 
 int main(){
 	Sequence x;
-	auto res = x.findElement(4,
-{1,9593,3903,7484},
-{6551,9498,4176,3185},
-1);
+	auto res = x.findElement(
+5, {1,1691,2895,8882,7564}, {6622,1590,1011,5587,2761}, 10		);
 	std::cout << res << '\n';
 }
