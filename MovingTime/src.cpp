@@ -13,6 +13,13 @@ class MovingTime {
 		double sum = (a + b + c) / 2.0;
 		return (a * b * c) / 4.0 / std::sqrt(sum * (sum - a) * (sum - b) * (sum - c));
 	}
+	double func(double a, double b, double c){
+		double in_radius = get_in(a, b, c);
+		double out_radius = get_out(a, b, c);
+
+		return out_radius * out_radius - in_radius * in_radius;
+	}
+	double eps = 0.000000001;
 public:
 	std::string maximizeRouterSpeed(std::string sa, std::string sb){
 		double a = atof(sa.c_str()), b = atof(sb.c_str());
@@ -20,20 +27,25 @@ public:
 		double best = 1e20;
 		double best_c = 0.0;
 
-		for(double c = 0.000; c < (a + b); c += 0.00001){
-			double in_radius = get_in(a, b, c);
-			double out_radius = get_out(a, b, c);
+		double l = 0.0 + eps, r = (a + b) / 2.0 - eps;
 
-			if(std::abs(in_radius * in_radius - out_radius * out_radius) < best){
-				best = std::abs(in_radius * in_radius - out_radius * out_radius);
-				best_c = c;
+		while(l < r and r - l > eps){
+			double mid1 = l + (r - l) / 3.0;
+			double mid2 = l + 2.0 * (r - l) / 3.0;
+
+			if(func(a, b, mid1) < func(a, b, mid2)){
+				r = mid2;
+			} else {
+				l = mid1;
 			}
 		}
 
 		std::string res = "";
-		best_c *= 100.0;
 
-		int x = std::floor(best_c + 0.5);
+		double res_double = l;
+		res_double *= 100.0;
+
+		int x = std::floor(res_double + 0.5);
 		int ite = 0;
 		while(x > 0){
 			if(ite == 2){

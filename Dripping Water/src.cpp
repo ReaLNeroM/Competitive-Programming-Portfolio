@@ -1,16 +1,17 @@
 #include <string>
 #include <vector>
 #include <queue>
+#include <algorithm>
 
 int const ay[] = {1, -1, 0, 0};
 int const ax[] = {0, 0, 1, -1};
+static const int maxn = 5005;
+static int adj[maxn][maxn];
 
 class DrippingWater {
-	static const int maxn = 110;
 	static const int INF = 10001;
-	int source = 105;
-	int sink = 106;
-	int adj[maxn][maxn];
+	int source = 5001;
+	int sink = 5002;
 	bool visited[maxn];
 	int par[maxn];
 	int n, y, x;
@@ -72,7 +73,7 @@ class DrippingWater {
 	}
 
 	int ind(int a, int b, int c){
-		return a * x * 2 + b * 2 + c;
+		return 2 * (a * x + b) + c;
 	}
 
 public:
@@ -80,6 +81,7 @@ public:
 		y = ceilMap.size();
 		x = ceilMap[0].size();
 
+		std::fill(&adj[0][0], &adj[0][0] + maxn * maxn, 0);
 		n = y * x;
 
 		for(int j = 0; j < x; j++){
