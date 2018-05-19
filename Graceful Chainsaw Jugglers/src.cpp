@@ -16,9 +16,6 @@ int main(){
 	for(int test = 1; test <= tests; test++){
 		int r, b;
 		std::cin >> r >> b;
-		if(r > b){
-			std::swap(r, b);
-		}
 
 		memset(dp, 0, sizeof(dp));
 
@@ -40,8 +37,13 @@ int main(){
 					}
 				}
 			}
+			
 			std::cout << "Case #" << test << ": " << dp[r][b][b + 1] << '\n';
 		} else {
+			if(r > b){
+				std::swap(r, b);
+			}
+
 			int most_b = std::sqrt(b) + 2;
 			int most_r = std::sqrt(r) + 2;
 			for(int i = 0; i <= r; i++){
@@ -57,6 +59,7 @@ int main(){
 					}
 				}
 			}
+
 			std::cout << "Case #" << test << ": " << dp[r][b][most_b] << '\n';
 		}
 	}

@@ -7,6 +7,7 @@ int color[maxn][maxn];
 int usedv[maxn][maxn];
 int usedh[maxn][maxn];
 int n;
+
 int exceed = 0;
 int changes = 0;
 int res = maxn;

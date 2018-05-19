@@ -10,6 +10,33 @@ std::string s2[maxn];
 bool used[maxn][maxn];
 int y, x;
 
+void switch_colors(){
+	for(int i = 0; i < y; i++){
+		for(int j = 0; j < x; j++){
+			if(s[i][j] == 'W'){
+				s[i][j] = 'B';
+			} else {
+				s[i][j] = 'W';
+			}
+		}
+	}
+}
+
+void rotate90(){
+	for(int i = 0; i < x; i++){
+		s2[i].clear();
+		s2[i].resize(y);
+	}
+	for(int i = 0; i < x; i++){
+		for(int j = 0; j < y; j++){
+			s2[i][j] = s[y - 1 - j][i];
+		}
+	}
+	for(int i = 0; i < x; i++){
+		s[i] = s2[i];
+	}
+}
+
 int main(){
 	std::ios::sync_with_stdio(false);
 
@@ -76,36 +103,13 @@ int main(){
 				}
 			}
 
-			for(int i = 0; i < y; i++){
-				for(int j = 0; j < x; j++){
-					if(s[i][j] == 'W'){
-						s[i][j] = 'B';
-					} else {
-						s[i][j] = 'W';
-					}
-				}
-			}
+			switch_colors();
 
 			if(vv % 2 == 1){
-				for(int i = 0; i < x; i++){
-					s2[i].clear();
-					s2[i].resize(y);
-				}
-				for(int i = 0; i < x; i++){
-					for(int j = 0; j < y; j++){
-						s2[i][j] = s[y - 1 - j][i];
-					}
-				}
-				for(int i = 0; i < x; i++){
-					s[i] = s2[i];
-				}
+				rotate90();
+
 				std::swap(y, x);
 			}
-
-			for(int i = 0; i < y; i++){
-				std::cout << s[i] << '\n';
-			}
-			std::cout << '\n';
 		}
 
 		std::cout << "Case #" << test << ": " << size << '\n';
