@@ -1,29 +1,38 @@
 #include <string>
 #include <vector>
 #include <queue>
-
-int const ay[] = {1, -1, 0, 0};
-int const ax[] = {0, 0, 1, -1};
+#include <algorithm>
+#include <cstring>
 
 class DrippingWater {
-	static const int maxn = 110;
+	static const int maxn = 55;
 	static const int INF = 10001;
-	int source = 105;
-	int sink = 106;
-	int adj[maxn][maxn];
-	bool visited[maxn];
-	int par[maxn];
+	const int source = 0;
+	const int sink = 1;
+	std::vector<int> ay;
+	std::vector<int> ax;
+
 	int n, y, x;
+
+	std::vector<std::vector<int> > adj;
+	int id[maxn][maxn][2];
+	int total_ids = 0;
+
+	std::vector<bool> visited;
+	std::vector<int> par;
 
 	int flow(){
 		int res = 0;
+
+		visited.resize(adj.size());
+		par.resize(adj.size());
 
 		bool gathered = true;
 		do {
 			gathered = false;
 
-			std::fill(visited, visited + maxn, false);
-			std::fill(par, par + maxn, -1);
+			std::fill(visited.begin(), visited.end(), false);
+			std::fill(par.begin(), par.end(), -1);
 
 			std::queue<int> q;
 
@@ -35,7 +44,7 @@ class DrippingWater {
 				int fr = q.front();
 				q.pop();
 
-				for(int i = 0; i < maxn; i++){
+				for(int i = 0; i < total_ids; i++){
 					if(adj[fr][i] and !visited[i]){
 						q.push(i);
 						visited[i] = true;
@@ -72,29 +81,48 @@ class DrippingWater {
 	}
 
 	int ind(int a, int b, int c){
-		return a * x * 2 + b * 2 + c;
-	}
+		if(id[a][b][c] == -1){
+			id[a][b][0] = total_ids;
+			id[a][b][1] = total_ids + 1;
+			total_ids += 2;
+		}
 
+		return id[a][b][c];
+	}
 public:
 	int fixCeiling(std::vector<std::string> ceilMap){
+		ay = ax = std::vector<int>(4);
+		ay[0] = ax[2] = 1;
+		ay[1] = ax[3] = -1;
 		y = ceilMap.size();
 		x = ceilMap[0].size();
-
 		n = y * x;
+
+		memset(id, -1, sizeof(id));
+		total_ids += 2; //for source and sink
+
+		for(int i = 0; i < y; i++){
+			for(int j = 0; j < x; j++){
+				ind(i, j, 0);
+				ind(i, j, 1);
+			}
+		}
+
+		adj.resize(total_ids, std::vector<int>(total_ids, 0));
 
 		for(int j = 0; j < x; j++){
 			if(ceilMap[0][j] == 'x'){
-				adj[source][ind(0, j, 0)]++;
+				adj[source][ind(0, j, 0)] += INF;
 			}
 			if(ceilMap[y - 1][j] == 'x'){
-				adj[ind(y - 1, j, 1)][sink]++;
+				adj[ind(y - 1, j, 1)][sink] += INF;
 			}
 		}
 
 		for(int i = 0; i < y; i++){
 			for(int j = 0; j < x; j++){
 				if(ceilMap[i][j] == 'x'){
-					adj[ind(i, j, 0)][ind(i, j, 1)] += 1;
+					adj[ind(i, j, 0)][ind(i, j, 1)]++;
 				}
 			}
 		}
