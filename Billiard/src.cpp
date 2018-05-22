@@ -2,6 +2,8 @@
 
 typedef long long ll;
 
+const ll break_iteration = 10000000000;
+
 ll y, x, posy, posx, vx, vy;
 ll l_a = 1, l_b = 0, d_a = 0, d_b = 1;
 ll gcd = -1;
@@ -9,6 +11,7 @@ ll gcd = -1;
 void extended(ll a, ll b){
 	if(b == 0){
 		gcd = a;
+		//std::cout << l_a << ' ' << l_b << ' ' << a << std::endl;
 		return;
 	}
 
@@ -35,7 +38,7 @@ std::vector<ll> solve(ll a1, ll m1, ll a2, ll m2){
 		ll lcm = y / gcd * x;
 
 		ll start = (l_a * a2) % m2 * m1;
-		start   += (l_b * a1) % m1 * m2;
+		start +=   (l_b * a1) % m1 * m2;
 		return {(start + y * x) % (y * x) / gcd, lcm};
 	} else {
 		return {-1, 0};
@@ -93,7 +96,6 @@ int main(){
 
 	ll resy = -1, resx = -1;
 	std::vector<ll> bounce_time = solve(alpha1, beta1, alpha2, beta2);
-
 	if(bounce_time[0] != -1){
 		ll converted = (bounce_time[0] % bounce_time[1] + bounce_time[1]) % bounce_time[1];
 		std::vector<ll> updated = {posy + converted * vy, posx + converted * vx};
