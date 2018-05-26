@@ -6,6 +6,10 @@ using namespace std;
 vector<string> split_string(string);
 
 ll inverse(ll a, ll m){
+	if(a == 0){
+		return -1;
+	}
+	
     ll exponent = m - 2;
     ll product = 1;
 
@@ -15,6 +19,8 @@ ll inverse(ll a, ll m){
         }
 
         a = (a * a) % m;
+
+        exponent /= 2;
     }
 
     return product;
@@ -28,7 +34,7 @@ long howManyGoodSubarrays(vector<int> A, int m, int given_k) {
 
     vector<ll> v(n);
     for(ll i = 0; i < n; i++){
-        v[i] = ((ll) A[i]) % mod;
+        v[i] = A[i] % mod;
     }
     
     ll res = 0;
@@ -52,7 +58,7 @@ long howManyGoodSubarrays(vector<int> A, int m, int given_k) {
         ll l = ql.front(), r = qr.front();
         ql.pop(), qr.pop();
 
-        if(ql == qr){
+        if(l == r){
             if(v[l] == k){
                 res++;
             }
