@@ -15,8 +15,6 @@ ll inverse(ll a, ll m){
         }
 
         a = (a * a) % m;
-
-        exponent /= 2;
     }
 
     return product;
@@ -30,7 +28,7 @@ long howManyGoodSubarrays(vector<int> A, int m, int given_k) {
 
     vector<ll> v(n);
     for(ll i = 0; i < n; i++){
-        v[i] = A[i] % mod;
+        v[i] = ((ll) A[i]) % mod;
     }
     
     ll res = 0;
@@ -54,7 +52,7 @@ long howManyGoodSubarrays(vector<int> A, int m, int given_k) {
         ll l = ql.front(), r = qr.front();
         ql.pop(), qr.pop();
 
-        if(l == r){
+        if(ql == qr){
             if(v[l] == k){
                 res++;
             }
