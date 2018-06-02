@@ -105,7 +105,7 @@ void landslide(int n) {
 
 			int sh = height[f]; //ShortHeight
 			while(sh > 0){
-
+				
 				sh -= sh & -sh;
 			}
 		} else if(type == 'q'){
