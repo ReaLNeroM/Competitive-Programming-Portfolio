@@ -1,4 +1,5 @@
 from __future__ import print_function
+import random
 import sys
 
 n, m, k, q = map(int, raw_input().split(' '))
@@ -6,19 +7,27 @@ n, m, k, q = map(int, raw_input().split(' '))
 def query_single(y):
 	print("? " + str(y + 1) + " 1 1")
 	get = input()
-
 	return get
-
 
 def query_double(y, x):
 	print("? " + str(y) + " " + str(x) + " 1")
 	get = input()
+	return get
 
+def query_triple(v):
+	print("? " + str(v[0]) + " " + str(v[1]) + " " + str(v[2]))
+	get = input()
 	return get
 
 
+def answer_single(y):
+	print("! " + str(y + 1) + " 1 1")
+
 def answer_double(y, x):
 	print("! " + str(y) + " " + str(x) + " 1")
+
+def answer_triple(v):
+	print("! " + str(v[1][0]) + " " + str(v[1][1]) + " " + str(v[1][2]))
 
 
 def split(y1, x1, y2, x2, most_y, most_x, most_val):
@@ -103,8 +112,28 @@ if n == 1000000 and m == 1 and k == 1 and q == 10000:
 		if value > best_value:
 			best_location, best_value = location, value
 
-	print("! " + str(best_location + 1) + " 1 1")
-# elif n == 1000000 and m == 1 and k == 1:
-# 	#TODO
+	answer_single(best_location)
 elif n > 1 and m > 1 and k == 1:
 	split(1, 1, n, m, 1, 1, 0)
+elif n > 1 and m > 1 and k > 1:
+	best = [0, [1, 1, 1]]
+
+	for i in range(q / 2):
+		queried_coords = [random.randint(1, n), random.randint(1, m), random.randint(1, k)]
+		query_array = [query_triple(queried_coords), queried_coords]
+
+		best = max(best, query_array)
+
+	for i in range(5, q / 2, 6):
+		best_temporary = list(best)
+
+		for j in range(-1, 2, 2):
+			for l in range(3):
+				new_query_coords = list(best_temporary[1])
+				new_query_coords[l] += j
+
+				if 1 <= new_query_coords[0] <= n and 1 <= new_query_coords[1] <= m and 1 <= new_query_coords[2] <= k:
+					curr = [query_triple(new_query_coords), new_query_coords]
+					best = max(best, curr)
+
+	answer_triple(best)
