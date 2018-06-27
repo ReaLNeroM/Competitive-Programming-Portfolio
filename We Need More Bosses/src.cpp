@@ -44,28 +44,39 @@ void bridge_dfs(int pos){
 	state[pos] = 2;
 }
 
-void dfs3(int pos){
+int max_bridge_trail_dfs(int pos){
 	state[pos] = 1;
 
-	int a = -1;
-	int b = -1;
+	max_bridge_trail[pos] = bridge_above[pos];
 
-	for(int i = 0; i < adj[pos].size(); i++){
-		int nnext = adj[pos][i];
+	for(int nnext : adj[pos]){
+		if(nnext != par[pos] and state[nnext] == 0){
+			max_bridge_trail[pos] = std::max(max_bridge_trail[pos], bridge_above[pos] + max_bridge_trail_dfs(nnext));
+		}
+	}
 
-		if(adj[pos][i] != par[pos] and state[nnext] == 0){
-			dfs3(nnext);
-			if(a < max_bridge_trail[nnext]){
-				b = a;
-				a = max_bridge_trail[nnext];
-			} else if(b < max_bridge_trail[nnext]){
-				b = max_bridge_trail[nnext];
+	return max_bridge_trail[pos];
+}
+
+void res_dfs(int pos){
+	state[pos] = 1;
+
+	int best_child = -1;
+	int second_best_child = -1;
+
+	for(int nnext : adj[pos]){
+		if(nnext != par[pos] and state[nnext] == 0){
+			res_dfs(nnext);
+			if(best_child < max_bridge_trail[nnext]){
+				second_best_child = best_child;
+				best_child = max_bridge_trail[nnext];
+			} else if(second_best_child < max_bridge_trail[nnext]){
+				second_best_child = max_bridge_trail[nnext];
 			}
 		}
 	}
 
-	res = std::max(res, std::max(a + b, std::max(a, b)));
-
+	res = std::max(res, std::max(best_child + second_best_child, std::max(best_child, second_best_child)));
 }
 
 int main(){
@@ -86,7 +97,10 @@ int main(){
 	bridge_dfs(0);
 
 	std::fill(state, state + n, 0);
-	dfs3(0);
+	max_bridge_trail_dfs(0);
+
+	std::fill(state, state + n, 0);
+	res_dfs(0);
 
 	std::cout << res << '\n';
 }
