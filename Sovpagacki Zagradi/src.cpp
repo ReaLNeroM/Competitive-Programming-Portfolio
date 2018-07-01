@@ -1,71 +1,56 @@
 #include <bits/stdc++.h>
  
-const int maxn = 2005;
-int dp[maxn][maxn];
-int pari[maxn][maxn];
-int parj[maxn][maxn];
-int n;
-char s[maxn];
- 
-int dfs(int i, int j){
-    if(dp[i][j] == -1){
-        dp[i][j] = 0;
- 
-        if(i == n and j == 0){
-            dp[i][j] = 1;
-            pari[i][j] = i;
-            parj[i][j] = j;
-        }
-        if(i != n){
-            if(dfs(i + 1, j + 1)){
-                dp[i][j] = 1;
-                pari[i][j] = i + 1;
-                parj[i][j] = j + 1;
-            } else if(j != 0 and dfs(i + 1, j - 1)){
-                dp[i][j] = 2;
-                pari[i][j] = i + 1;
-                parj[i][j] = j - 1;
-            }
-        }
-    }
-}
- 
-void dfs2(int i, int j){
-    if(i == n){
-        return;
-    }
-    if(dp[i][j] == 1){
-        std::cout << '(';
-        dfs2(pari[i][j], parj[i][j]);
-    } else {
-        std::cout << ')';
-        dfs2(pari[i][j], parj[i][j]);
-    }
-}
+typedef long long ll;
+
+const ll mod = 1000000000039;
+const ll maxn = 1e6 + 1e2;
+
+ll n;
+std::string s;
+std::unordered_map<ll, std::vector<ll>> m;
  
 int main(){
     std::ios::sync_with_stdio(false);
  
-    std::string ss = "";
-    std::cin >> ss;
-    n = ss.size();
- 
-    for(int i = 0; i < n; i++){
-        s[i] = ss[i];
+    std::cin >> s;
+    n = s.size();
+
+    std::stack<char> open;
+    std::stack<ll> open_hash;
+    open_hash.push(1LL);
+
+    for(ll i = 0; i < n; i++){
+    	if(!open.empty() and open.top() == s[i]){
+			m[open_hash.top()].push_back(i);
+    		open.pop();
+    		open_hash.pop();
+    	} else {
+    		open.push(s[i]);
+    		open_hash.push((open_hash.top() * 31LL + (open.top() - 'a') + 1LL) % mod);
+			m[open_hash.top()].push_back(i);
+    	}
+
     }
- 
-    for(int i = 0; i < n; i++){
-        for(int j = 0; j < n; j++){
-            dp[i][j] = -1;
-        }
+
+    if(!open.empty()){
+    	std::cout << -1 << '\n';
+    	return 0;
     }
- 
-    dfs(0, 0);
- 
-    if(!dfs(0, 0)){
-        std::cout << -1 << std::endl;
-        return 0;
+
+    std::string res = std::string(n, '(');
+
+    for(ll i = 0; i < n; i++){
+    	if(!open.empty() and open.top() == s[i]){
+    		open.pop();
+    		open_hash.pop();
+    	} else {
+    		open.push(s[i]);
+    		open_hash.push((open_hash.top() * 31LL + (open.top() - 'a') + 1LL) % mod);
+    		auto& v = m[open_hash.top()];
+    		res[v[v.size() - 1]] = ')';
+    		v.pop_back();
+    	}
     }
- 
-    dfs2(0, 0);
+
+    std::cout << res << '\n';
 }
