@@ -70,9 +70,7 @@ void solve(){
 
 	for(ll i = 0; i < n; i++){
 		ll pos = order[i];
-		ll most = down[pos];
-
-		most += std::max(0LL, up[pos]);
+		ll most = down[pos] + std::max(0LL, up[pos]);
 
 		ll best = upanything[pos], second_best = 0;
 
@@ -104,28 +102,7 @@ void solve(){
 	for(ll i = 0; i < n; i++){
 		std::fill(sum, sum + adj[i].size(), 0);
 
-		for(ll j = 0; j < adj[i].size(); j++){
-			if(adj[i][j] == par[i]){
-				sum[j] = up[i];
-			} else {
-				sum[j] = down[adj[i][j]];
-			}
-		}
-
-		ll others_sum = val[i];
-		for(ll j = 0; j < (int) adj[i].size(); j++){
-			others_sum += std::max(0LL, sum[j]);
-		}
-
-		for(ll j = 0; j < (int) adj[i].size(); j++){
-			others_sum -= std::max(0LL, sum[j]);
-			if(adj[i][j] != par[i]){
-				res = std::max(res, others_sum * anything[adj[i][j]]);
-			} else {
-				res = std::max(res, others_sum * upanything[i]);
-			}
-			others_sum += std::max(0LL, sum[j]);
-		}
+		res = std::max(res, anything[i] * upanything[i]);
 	}
 }
 
