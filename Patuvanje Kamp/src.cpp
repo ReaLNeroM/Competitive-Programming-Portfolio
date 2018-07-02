@@ -3,18 +3,20 @@
 typedef long long ll;
 
 const ll maxn = 1e6 + 1e2;
-const ll INF = 1e16;
-const ll INFPATH = 500000001;
+const ll INFDIST = 1e16;
+const ll MAXEDGE = 500000001;
 
 ll v, e;
 ll val[maxn];
 std::vector<std::pair<ll, ll>> adj[maxn];
 ll dist[maxn];
 ll x_used[maxn];
+ll start[maxn];
+ll end[maxn];
 bool used[maxn];
 
 std::pair<ll, ll> attempt(ll posa, ll posb, ll x){
-	std::fill(dist, dist + v, INF);
+	std::fill(dist, dist + v, INFDIST);
 	std::fill(used, used + v, 0);
 	std::fill(x_used, x_used + v, 0);
 
@@ -54,6 +56,26 @@ std::pair<ll, ll> attempt(ll posa, ll posb, ll x){
 	return {dist[posb], x_used[posb]};
 }
 
+void multi_binary(ll domain_l, ll domain_r, ll value_l, ll value_r, ll f, ll s){
+	if(domain_l > domain_r or value_l > value_r){
+		return;
+	}
+
+	ll mid = (domain_l + domain_r) / 2;
+
+	std::pair<ll, ll> query = attempt(f, s, mid);
+
+	start[query.second] = std::min(start[query.second], mid);
+	end[query.second] = std::max(end[query.second], mid);
+
+	if(value_l != value_r or start[query.second] > domain_l){
+		multi_binary(domain_l, mid - 1, query.second, value_r, f, s);
+	}
+	if(value_l != value_r or end[query.second] < domain_r){
+		multi_binary(mid + 1, domain_r, value_l, query.second, f, s);
+	}
+}
+
 int main(){
 	std::ios::sync_with_stdio(false);
 
@@ -88,55 +110,31 @@ int main(){
 
 		ll res = 0, ressum = 0;
 
-		auto initial = attempt(f, s, 1);
-		ll last = 1;
-		ll big_l = 1, big_r = INFPATH;
+		std::fill(start, start + v, MAXEDGE);
+		std::fill(end, end + v, 0);
 
-		if(initial.first == INF){
+		auto initial = attempt(f, s, 1);
+
+		if(initial.first == INFDIST){ //no path
 			std::cout << 0 << ' ' << 0 << '\n';
 			continue;
 		}
 
-		while(last < INFPATH){
-			initial = attempt(f, s, last);
-			ll l = big_l, r = big_r;
-			ll best = l - 1;
+		multi_binary(1, MAXEDGE, 0, initial.second, f, s); // returns start and end intervals 
+														   // for each value in a nonincreasing function
 
-			while(l <= r){
-				ll mid = (l + r) / 2;
-
-				if(attempt(f, s, mid).second == initial.second){
-					l = mid + 1;
-					best = mid;
-				} else {
-					r = mid - 1;
-				}
+		for(ll j = 1; j < v; j++){
+			if(start[j] <= end[j]){
+				res += end[j] - start[j] + 1;
+				ressum += attempt(f, s, start[j]).first * (end[j] - start[j] + 1LL);
+				ressum += (end[j] - start[j]) * (end[j] - start[j] + 1) / 2LL * j;
 			}
-
-			if(initial.second != 0 and best == INFPATH){
-				res = -1;
-				ressum = -1;
-				break;
-			}
-
-			if(best != INFPATH){
-				if(last <= best){
-					res += best - last + 1;
-
-					ressum += initial.first * (best - last + 1LL);
-					ressum += (best - last) * (best - last + 1) / 2LL * initial.second;
-				}
-			} else {
-				res += 1;
-				ressum += attempt(f, s, best).first;
-				break;
-			}
-
-			big_l = best + 1;
-			last = best + 1;
 		}
 
-		if(res == -1){
+		res += 1;
+		ressum += attempt(f, s, MAXEDGE).first;
+
+		if(start[0] > end[0]){
 			std::cout << "inf\n";
 		} else {
 			std::cout << res << ' ' << ressum << '\n';	
