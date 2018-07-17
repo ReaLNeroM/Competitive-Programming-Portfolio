@@ -5,47 +5,35 @@ typedef long long ll;
 const ll BASE = 1e13;
 const ll maxn = 1e4 + 1e2;
 
-struct Bigll {
+struct BigInt {
 	std::vector<ll> n;
 
-	Bigll(ll initial_number = 0){
+	BigInt(ll initial_number = 0){
 		n.push_back(initial_number);
 	}
-	Bigll(const Bigll &x){
+	BigInt(const BigInt &x){
 		this->n = x.n;
 	}
 
-	bool operator<(Bigll const &x){
-		if(x.n.size() != this->n.size()){
-			return (x.n.size() > this->n.size());
+	bool operator<(BigInt const &x){
+		if(this->n.size() != x.n.size()){
+			return (this->n.size() < x.n.size());
 		} else {
-			for(ll i = (ll) x.n.size() - 1; i >= 0; i--){
-				if(x.n[i] != this->n[i]){
-					return (x.n[i] > this->n[i]);
+			for(ll i = (ll) this->n.size() - 1; i >= 0; i--){
+				if(this->n[i] != x.n[i]){
+					return (this->n[i] < x.n[i]);
 				}
 			}
 
 			return false;
 		}
 	}	
-	bool operator<=(Bigll const &x){
-		if(x.n.size() != this->n.size()){
-			return (x.n.size() > this->n.size());
-		} else {
-			for(ll i = (ll) x.n.size() - 1; i >= 0; i--){
-				if(x.n[i] != this->n[i]){
-					return (x.n[i] > this->n[i]);
-				}
-			}
 
-			return true;
-		}
-	}
-	bool operator==(Bigll const &x){
+	bool operator==(BigInt const &x){
 		return this->n == x.n;
 	}
 
-	void operator+=(Bigll x){
+	void operator+=(BigInt x){
 		ll biggest_size = std::max(x.n.size(), this->n.size());
 		ll carry = 0;
 
@@ -53,11 +41,11 @@ struct Bigll {
 			if(i < x.n.size()){
 				carry += x.n[i];
 			}
-			if(i < this->n.size()){
-				carry += this->n[i];
-			} else {
+			if(i >= this->n.size()){
 				this->n.push_back(0);
 			}
+
+			carry += this->n[i];
 
 			this->n[i] = carry % BASE;
 			carry /= BASE;
@@ -79,10 +67,11 @@ struct Bigll {
 		}
 	}
 
-	Bigll operator*(ll y){
-		Bigll copy_num = *this;
+	BigInt operator*(ll y){
+		BigInt copy_num = *this;
 
 		copy_num *= y;
+
 		return copy_num;
 	}
 
@@ -97,16 +86,30 @@ struct Bigll {
 			carry += this->n[i];
 
 			if(carry >= x or started){
-				this->n[i] = carry / x;
-				if(!started){
-					this->n.resize(i + 1);
-				}
 				started = true;
+				
+				this->n[i] = carry / x;
 				carry = carry % x;
+			} else if(!started){
+				this->n.pop_back();
 			}
 		}
 	}
+
 };
+
+std::ostream& operator<<(std::ostream& os, BigInt x){
+	for(ll i = (ll) x.n.size() - 1; i >= 0; i--){
+		if(i + 1 != x.n.size()){
+			for(ll j = BASE / 10; j > x.n[i] and j > 1; j /= 10){
+				os << 0;
+			}
+		}
+		os << (ll) x.n[i];
+	}
+
+	return os;
+}
 
 ll prime[maxn];
 
@@ -121,9 +124,9 @@ int main(){
 	ll n;
 	std::cin >> n;
 
-	Bigll denominator(1);
-
 	memset(prime, true, sizeof(prime));
+
+	BigInt denominator(1);
 
 	for(ll i = 2; i <= n; i++){
 		if(prime[i]){
@@ -139,43 +142,31 @@ int main(){
 		}
 	}
 
-	Bigll numerator(denominator);
+	BigInt numerator(denominator);
 
 	for(ll i = 2; i <= n; i++){
-		Bigll cop = denominator;
+		BigInt cop = denominator;
 		cop /= i;
 		numerator += cop;
 	}
 
 	for(ll i = 2; i <= n; i++){
 		if(prime[i]){
-			Bigll x = numerator;
-			x /= i;
-			Bigll y = denominator;
-			y /= i;
-			if(x * i == numerator and y * i == denominator){
-				numerator = x;
-				denominator = y;
-			}
+			do {
+				BigInt x = numerator; 
+				x /= i;
+				BigInt y = denominator; 
+				y /= i;
+				
+				if(x * i == numerator and y * i == denominator){
+					numerator = x;
+					denominator = y;
+				} else {
+					break;
+				}
+			} while (true);
 		}
 	}
 
-	for(ll i = (ll) numerator.n.size() - 1; i >= 0; i--){
-		if(i + 1 != numerator.n.size()){
-			for(ll j = BASE / 10; j > numerator.n[i]; j /= 10){
-				std::cout << 0;
-			}
-		}
-		std::cout << (ll) numerator.n[i];
-	}
-	std::cout << '\n';
-	for(ll i = (ll) denominator.n.size() - 1; i >= 0; i--){
-		if(i + 1 != denominator.n.size()){
-			for(ll j = BASE / 10; j > denominator.n[i]; j /= 10){
-				std::cout << 0;
-			}
-		}
-		std::cout << (ll) denominator.n[i];
-	}
-	std::cout << '\n';
+	std::cout << numerator << '\n' << denominator << '\n';
 }
