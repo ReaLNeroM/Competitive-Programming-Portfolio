@@ -3,169 +3,185 @@
 typedef long long ll;
 
 const ll maxn = 300005;
-const ll mod = 1e9 + 9;
-ll seg[8 * maxn];
-ll segl[26][8 * maxn];
-ll laz[8 * maxn];
-ll ppow[maxn];
-std::unordered_map<ll, std::vector<ll>> m;
+const ll mod[] = {(ll) 1e9 + 9, (ll) 999999937LL};
+ll seg_orig[2 * maxn][2];
+ll size_orig[2 * maxn];
+
+ll seg[4 * maxn][2];
+ll size[4 * maxn];
+ll laz[4 * maxn];
+ll ppow[maxn][2];
 std::string s;
+ll n, q;
 
-void build(ll l, ll r, ll ind){
+std::pair<ll, ll> query_orig(ll l, ll r){
+	r++;
+	ll res_l[] = {0, 0};
+	ll res_r[] = {0, 0};
+	ll size_l = 0;
+	ll size_r = 0;
+
+	for(l += n, r += n; l < r; l /= 2, r /= 2){
+		if(l & 1){
+			res_l[0] = (res_l[0] * ppow[size_orig[l]][0] + seg_orig[l][0]) % mod[0];
+			res_l[1] = (res_l[1] * ppow[size_orig[l]][1] + seg_orig[l][1]) % mod[1];
+
+			size_l += size_orig[l];
+
+			l++;
+		}
+		if(r & 1){
+			r--;
+
+			res_r[0] = (seg_orig[r][0] * ppow[size_r][0] + res_r[0]) % mod[0];
+			res_r[1] = (seg_orig[r][1] * ppow[size_r][1] + res_r[1]) % mod[1];
+
+			size_r += size_orig[r];
+		}
+	}
+
+	return {(res_l[0] * ppow[size_r][0] + res_r[0]) % mod[0], 
+			(res_l[1] * ppow[size_r][1] + res_r[1]) % mod[1]};
+}
+
+void build(ll ind = 0, ll l = 0, ll r = n - 1){
 	if(l == r){
-		seg[ind] = s[l] - 'a' + 1;
-		segl[s[l]]
+		seg[ind][0] = seg[ind][1] = (s[l] - 'a') + 1LL;
+		size[ind] = 1;
+		laz[ind] = -1;
 		return;
 	}
 
-	int mid = (l + r) / 2;
+	ll mid = (l + r) / 2;
+	build(2 * ind + 1, l, mid);
+	build(2 * ind + 2, mid + 1, r);
 
-	build(l, mid, 2 * ind + 1);
-	build(mid + 1, r, 2 * ind + 2);
-
-	seg[ind] = seg[2 * ind + 1] * ppow[r - (mid + 1) + 1] + seg[2 * ind + 2];
+	seg[ind][0] = (seg[2 * ind + 1][0] * ppow[size[2 * ind + 2]][0] + seg[2 * ind + 2][0]) % mod[0];
+	seg[ind][1] = (seg[2 * ind + 1][1] * ppow[size[2 * ind + 2]][1] + seg[2 * ind + 2][1]) % mod[1];
+	size[ind] = size[2 * ind + 1] + size[2 * ind + 2];
+	laz[ind] = -1;
 }
 
-void propagate(ll side, ll ind, ll l, ll r){
-	if(laz[side][ind]){
-		std::vector<ll> v = m[seg[side][ind]];
-		seg[side][2 * ind + 1] = v[0];
-		seg[side][2 * ind + 2] = v[1];
-
-		laz[side][ind] = false;
+void propagate(ll ind, ll l, ll r){
+	if(laz[ind] == -1){
+		return;
 	}
+
+	ll mid = (l + r) / 2;
+
+	ll l_size = mid - l;
+	ll r_size = r - (mid + 1);
+
+	auto a = query_orig(laz[ind], laz[ind] + l_size);
+
+	seg[2 * ind + 1][0] = a.first;
+	seg[2 * ind + 1][1] = a.second;
+
+	auto b = query_orig(laz[ind] + l_size + 1, laz[ind] + l_size + 1 + r_size);
+
+	seg[2 * ind + 2][0] = b.first;
+	seg[2 * ind + 2][1] = b.second;
+
+	laz[2 * ind + 1] = laz[ind];
+	laz[2 * ind + 2] = laz[ind] + l_size + 1;
+	laz[ind] = -1;
 }
 
-ll ans_s;
-
-ll query(ll side, ll ql, ll qr, ll cl = 0, ll cr = maxn - 1, ll ind = 0){
-	if(ql <= cl and cr <= qr){
-		ans_s = cr - cl + 1;
-		return seg[side][ind];
-	} else if(qr < cl or cr < ql){
-		ans_s = 0;
-		return 0;
+std::pair<std::pair<ll, ll>, ll> query(ll ql, ll qr, ll ind = 0, ll cl = 0, ll cr = n - 1){
+	if(cr < ql or qr < cl){
+		return {{0, 0}, 0};
+	} else if(ql <= cl and cr <= qr){
+		return {{seg[ind][0], seg[ind][1]}, size[ind]};
 	}
 
-	propagate(side, ind, cl, cr);
+	propagate(ind, cl, cr);
+	ll mid = (cl + cr) / 2;
+
+	auto a = query(ql, qr, 2 * ind + 1, cl, mid);
+	auto b = query(ql, qr, 2 * ind + 2, mid + 1, cr);
+	return {{(a.first.first * ppow[b.second][0] + b.first.first) % mod[0], 
+			 (a.first.second * ppow[b.second][1] + b.first.second) % mod[1]}, a.second + b.second};
+}
+
+void update(ll ql, ll qr, ll upd_pos, ll ind = 0, ll cl = 0, ll cr = n - 1){
+	if(cr < ql or qr < cl){
+		return;
+	} else if(ql <= cl and cr <= qr){
+		auto x = query_orig(upd_pos, upd_pos + cr - cl);
+		seg[ind][0] = x.first;
+		seg[ind][1] = x.second;
+		laz[ind] = upd_pos;
+		return;
+	}
+
+	propagate(ind, cl, cr);
 
 	ll mid = (cl + cr) / 2;
 
-	ll f_v = query(side, ql, qr, cl, mid, 2 * ind + 1);
-	ll f_s = ans_s;
-	ll s_v = query(side, ql, qr, mid + 1, cr, 2 * ind + 2);
-	ll s_s = ans_s;
+	ll left_updated = std::max(0LL, mid - std::max(cl, ql) + 1);
+	update(ql, qr, upd_pos, 2 * ind + 1, cl, mid);
+	update(ql, qr, upd_pos + left_updated, 2 * ind + 2, mid + 1, cr);
 
-	ll res;
-	res = f_v * ppow[s_s] + s_v;
-	res %= mod;
-	if(f_v and s_v){
-		m[res] = {f_v, s_v, f_v, s_s};
-	}
-
-	ans_s = f_s + s_s;
-
-	return res;
-}
-
-void update(ll side, ll ql, ll qr, ll qval, ll cl = 0, ll cr = maxn - 1, ll ind = 0){
-	while(ql != qr and ql < cl){
-		ql += m[qval][2];
-		qval = m[qval][1];
-	}
-	while(ql != qr and cr < qr){
-		qr -= m[qval][3];
-		qval = m[qval][0];
-	}
-
-	if(ql == cl and cr == qr){
-		seg[side][ind] = qval;
-		laz[side][ind] = true;
-		return;
-	} else if(qr < cl or cr < ql){
-		return;
-	}
-
-	propagate(side, ind, cl, cr);
-
-	ll mid = (cl + cr) / 2;
-
-	update(side, ql, qr, qval, cl, mid, 2 * ind + 1);
-	update(side, ql, qr, qval, mid + 1, cr, 2 * ind + 2);
-
-	seg[side][ind] = seg[side][2 * ind + 1] * ppow[mid - cl + 1] + seg[side][2 * ind + 2];
-	seg[side][ind] %= mod;
-	m[seg[side][ind]] = {seg[side][2 * ind + 1], seg[side][2 * ind + 2], mid - cl + 1, cr - (mid + 1) + 1};
+	seg[ind][0] = (seg[2 * ind + 1][0] * ppow[size[2 * ind + 2]][0] + seg[2 * ind + 2][0]) % mod[0];
+	seg[ind][1] = (seg[2 * ind + 1][1] * ppow[size[2 * ind + 2]][1] + seg[2 * ind + 2][1]) % mod[1];
 }
 
 int main(){
 	std::ios::sync_with_stdio(false);
 
-	ppow[0] = 1;
+	ppow[0][0] = ppow[0][1] = 1;
 	for(ll i = 1; i < maxn; i++){
-		ppow[i] = ppow[i - 1] * 31;
-		ppow[i] %= mod;
+		ppow[i][0] = (ppow[i - 1][0] * 31LL) % mod[0];
+		ppow[i][1] = (ppow[i - 1][1] * 37LL) % mod[1];
 	}
-
-	ll n, q;
-	std::cin >> n >> q;
 
 	std::cin >> s;
-	while(s[0].size() != maxn){
-		s[0] += (char) ('a' - 1);
+
+	n = s.size();
+	std::cin >> q;
+
+	for(ll i = 2 * n - 1; i >= n; i--){
+		seg_orig[i][0] = seg_orig[i][1] = (s[i - n] - 'a') + 1LL;
+		size_orig[i] = 1;
 	}
 
-	s[1] = s[0];
-	std::reverse(s[1].begin(), s[1].end());
+	for(ll i = n - 1; i > 0; i--){
+		seg_orig[i][0] = (seg_orig[2 * i][0] * ppow[size_orig[2 * i + 1]][0] + seg_orig[2 * i + 1][0]) % mod[0];
+		seg_orig[i][1] = (seg_orig[2 * i][1] * ppow[size_orig[2 * i + 1]][1] + seg_orig[2 * i + 1][1]) % mod[1];
+		size_orig[i] = size_orig[2 * i] + size_orig[2 * i + 1];
+	}
 
-	build(0, 0, maxn - 1, 0);
-	build(1, 0, maxn - 1, 0);
-
-	std::stringstream ostr;
+	build();
 
 	for(ll i = 0; i < q; i++){
-		char c;
-		std::cin >> c;
+		ll query_type;
+		std::cin >> query_type;
 
-		if(c == 'Q'){
-			ll a, b;
-			std::cin >> a >> b;
+		if(query_type == 1){
+			ll m, n, p;
+			std::cin >> m >> n >> p;
 
-			a--, b--;
-
-			if(query(0, a, b) == query(1, maxn - 1 - b, maxn - 1 - a)){
-				ostr << "YES\n";
-			} else {
-				ostr << "NO\n";
+			m--, n--, p--;
+			if(m > n){
+				std::swap(m, n);
 			}
+
+			if(query(m, n) == query(p, p + (n - m))){
+				std::cout << "Y\n";
+			} else {
+				std::cout << "N\n";
+			}
+		} else if(query_type == 2){
+			ll m, n, p;
+			std::cin >> m >> n >> p;
+			m--, n--, p--;
+			if(m > n){
+				std::swap(n, m);
+			}
+
+			update(m, n, p);
 		} else {
-			// ll t;
-			// std::cin >> t;
-
-			// if(t == 1){
-			// 	ll a, b, c;
-			// 	std::cin >> a >> b >> c;
-			// 	a--, b--, c--;
-			// 	return -1;
-			// } else if(t == 2){
-			// 	ll a, b;
-			// 	std::cin >> a >> b;
-			// 	a--, b--;
-
-			// 	ll hash_a = query(0, a, b);
-			// 	ll hash_b = query(1, maxn - 1 - b, maxn - 1 - a);
-
-			// 	update(0, a, b, hash_b);
-			// 	update(1, maxn - 1 - b, maxn - 1 - a, hash_a);
-			// } else if(t == 3){
-			// 	ll i;
-			// 	char ch;
-			// 	std::cin >> i >> ch;
-			// 	i--;
-			// 	return -1;
-			// }
+			return -1;
 		}
 	}
-
-	std::cout << ostr.str();
 }
