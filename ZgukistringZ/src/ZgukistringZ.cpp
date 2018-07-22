@@ -13,6 +13,9 @@ int main() {
 	for(int i = 0; i < strletters.length(); i++){
 		letters[strletters[i] - 'a']++;
 	}
+
+	std::string s = "HELLO WORLD";
+
 	for(int i = 0; i < strgood[0].length(); i++){
 		good[0][strgood[0][i] - 'a']++;
 	}
