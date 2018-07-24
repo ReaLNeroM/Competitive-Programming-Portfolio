@@ -84,8 +84,14 @@ static void runGame(int F) {
     int smallest = 0, biggest = 0;
 
     for (i=0;i<N;++i) {
-        scanf("%d",&P[i]);
+        P[i] = i;
+        // scanf("%d",&P[i]);
     }
+    int first_two = 0;
+    if(P[1] > P[0]){
+        first_two = 1;
+    }
+
     for(int i = 0; i < N; i++){
         if(P[smallest] > P[i]){
             smallest = i;
@@ -100,9 +106,10 @@ static void runGame(int F) {
         printf("%d %d\n", minValue(N, W), smallest);
     } else if (F == 2 and maxValue(N, W) != biggest) {
         printf("%d %d\n", maxValue(N, W), biggest);
-    } else if (F == 3) {
+    } else if (F == 3 and greaterValue(N, W) != first_two) {
         printf("%d\n", greaterValue(N, W));
-    } else if (F == 4) {
+    } else if (F == 4 and W == N) {
+        
         int userP[105];
         allValues(N, W, userP);
         for (i=0;i<N;i++) {
@@ -110,14 +117,17 @@ static void runGame(int F) {
         }
         printf("\n");
     }
-    printf("Made %d calls to playRound.\n", numQueries);
+    int allowed[] = {0, 1, 4, 4, 10000};
+    if(allowed[F] < numQueries){
+        printf("Made %d calls to playRound.\n", numQueries);
+    }
 }
 
 static void grader() {
     int i;
 
     int F, G;
-    scanf("%d %d",&F,&G);
+    scanf("%d %d %d",&F,&G,&i);
 
     for (i=0;i<G;i++) {
         runGame(F);
