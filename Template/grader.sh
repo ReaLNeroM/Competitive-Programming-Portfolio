@@ -9,12 +9,17 @@ for input in `find . -name "*${in_extension}"`; do
 	answer=${input::-in_length}${out_extension}
 
 	echo $input
-	echo $answer
+	
 	time ./a.out < $input > response.temp
 
 	if [ -f $answer ]; then
-		diff $answer response.temp
+		if [ "$(diff -w $answer response.temp)" != "" ]; then
+			echo WA
+		fi
 	else
 		echo ANSWER FILE NOT FOUND
 	fi
 done
+
+for input in `find . -name "*${in_extension}"`; do
+	input=${input:2:${#input}}
