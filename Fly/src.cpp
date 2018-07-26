@@ -4,17 +4,17 @@ typedef long long ll;
 
 const int maxn = 1e6 + 1e2;
 int planets;
-double payload;
-double lift[maxn];
-double land[maxn];
+long double payload;
+long double lift[maxn];
+long double land[maxn];
 
-bool good(double fuel){
+bool good(long double fuel){
 	for(int i = 0; i < planets; i++){
-		fuel -= ((double) (payload + fuel)) / lift[i];
+		fuel -= ((long double) (payload + fuel)) / lift[i];
 		if(fuel <= 0.0){
 			return false;
 		}
-		fuel -= ((double) (payload + fuel)) / land[(i + 1) % planets];
+		fuel -= ((long double) (payload + fuel)) / land[(i + 1) % planets];
 		if(fuel <= 0.0){
 			return false;
 		}
@@ -34,11 +34,11 @@ int main(){
 		std::cin >> land[i];
 	}
 
-	double l = 0.0, r = 1e9;
-	double best = -1;
+	long double l = 0.0, r = 1e9 + 10.0;
+	long double best = -1;
 
 	for(ll iterations = 0; iterations < 200; iterations++){
-		double mid = (l + r) / 2.0;
+		long double mid = (l + r) / 2.0;
 
 		if(good(mid)){
 			best = mid;
