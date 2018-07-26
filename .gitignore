@@ -2,11 +2,12 @@
 */.settings
 */Debug/*
 Mendo/*
+CodeForces/*
 *.kate-swp
 .metadata
 .directory
 *.out
 *.in
-*.sh
+*.temp
 *.exe
 *.h.gch
