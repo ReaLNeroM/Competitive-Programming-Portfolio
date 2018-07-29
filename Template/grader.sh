@@ -20,6 +20,3 @@ for input in `find . -name "*${in_extension}"`; do
 		echo ANSWER FILE NOT FOUND
 	fi
 done
-
-for input in `find . -name "*${in_extension}"`; do
-	input=${input:2:${#input}}
