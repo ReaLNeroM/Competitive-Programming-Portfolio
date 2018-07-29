@@ -24,7 +24,7 @@ int score(std::string& a, std::string& b){
 	int a_r = count_regions(a);
 	int b_r = count_regions(b);
 
-	return std::max(a_r, b_r) - ((a[0] != b[0] or a_r != b_r));
+	return std::max(a_r, b_r) - ((int) (a[0] != b[0] or a_r != b_r));
 }
 
 void even_out_regions(std::string& a, std::string& b, int a_regions, int b_regions, bool swap){
@@ -34,8 +34,9 @@ void even_out_regions(std::string& a, std::string& b, int a_regions, int b_regio
 			a_pos++;
 		}
 
-		int other = a_regions - (b_regions + take);
-		if(std::abs(other - (b_regions + take)) <= 1){
+		int primary = b_regions + take - (a[a_pos] == b[0]);
+		int other = a_regions - take;
+		if(std::abs(other - primary) <= 1){
 			std::string temp_a = a.substr(a_pos + 1, a.size() - a_pos);
 			std::string temp_b = a.substr(0, a_pos + 1) + b;
 
