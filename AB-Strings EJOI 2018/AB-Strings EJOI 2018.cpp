@@ -93,6 +93,7 @@ int main(){
 		even_out_regions(a, b, a_regions, b_regions, false);
 	} else if(b_regions >= a_regions + 2){
 		even_out_regions(b, a, b_regions, a_regions, true);
+		std::swap(best_a, best_b);
 	}
 
 	a = best_a;
@@ -112,20 +113,27 @@ int main(){
 	a_regions = count_regions(a);
 	b_regions = count_regions(b);
 
+	int a_size = 0;
+	int b_size = 0;
 	int a_pos = 0;
 	int b_pos = 0;
 
 	for(int i = 0; i + 1 < a_regions or i + 1 < b_regions; i++){
 		while(a_pos < a.size() - 1 and a[a_pos] == a[a_pos + 1]){
 			a_pos++;
+			a_size++;
 		}
 		while(b_pos < b.size() - 1 and b[b_pos] == b[b_pos + 1]){
 			b_pos++;
+			b_size++;
 		}
 
 		a_pos++;
 		b_pos++;
-		res.push_back({a_pos, b_pos});
+		a_size++;
+		b_size++;
+		res.push_back({a_size, b_size});
+		std::swap(a_size, b_size);
 	}
 
 	std::cout << res.size() << '\n';
