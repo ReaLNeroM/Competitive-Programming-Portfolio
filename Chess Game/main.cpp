@@ -5,65 +5,78 @@
 #include <SFML/Graphics.hpp>
 #include "magic.h"
 #include "helper.h"
-#include "pieces.h"
+#include "piece.h"
+#include "pieceHandler.h"
 
 int main(){
 	sf::RenderWindow window(sf::VideoMode(Magic::size, Magic::size), "It Works!");
 	window.setFramerateLimit(60);
 
-	Pieces::init();
+	PieceHandler::init();
 
-	sf::Texture board_image;
-	board_image.loadFromFile(Magic::board_string);
+	sf::Texture boardImage;
+	boardImage.loadFromFile(Magic::boardString);
 
 	sf::Sprite board;
-	board.setTexture(board_image, true);
+	board.setTexture(boardImage, true);
 	board.setPosition(0.f, 0.f);
-	board.setScale((double) Magic::size / board_image.getSize().x, 
-					(double) Magic::size / board_image.getSize().y);
+	board.setScale((double) Magic::size / boardImage.getSize().x, 
+					(double) Magic::size / boardImage.getSize().y);
 
-	int click_state = 0;
-	sf::Sprite *held = NULL;
-	sf::Vector2f held_coord(0, 0);
+	int clickState = 0;
+	Piece::Base *held = NULL;
+
+	Magic::color side = Magic::color::white;
 
 	while (window.isOpen()){
 		sf::Event event;
-		auto mouse_location = sf::Mouse::getPosition(window);
+		auto mouseLocation = sf::Mouse::getPosition(window);
+
 		while (window.pollEvent(event)){
 			if (event.type == sf::Event::Closed){
 				window.close();
 			} else if(event.type == sf::Event::MouseButtonPressed){
 				if(event.mouseButton.button == sf::Mouse::Left){
-					click_state = 1;
-					held = Pieces::find(mouse_location);
-					held_coord = held->getPosition();
+					held = PieceHandler::find(mouseLocation);
+
+					if(held->getColor() != side){
+						held = NULL;
+					} else {
+						clickState = 1;
+					}
 				}
 			} else if(event.type == sf::Event::MouseButtonReleased){
-				if(click_state != 1 or held == NULL){
-					std::cerr << "Release with no press" << '\n';
-					return -1;
+				if(clickState != 1 or held == NULL){
+					continue;
 				}
 
-				Pieces::move(*held, held_coord, Helper::get_indices(mouse_location));
+				if(held->attemptMove(PieceHandler::board, Helper::getIndices(mouseLocation))){
+					if(side == Magic::color::white){
+						side = Magic::color::black;
+					} else {
+						side = Magic::color::white;
+					}
+				}
 
-				click_state = 2;
+				clickState = 2;
 				held = NULL;
 			}
 		}
 
-		if(click_state == 1){
+		if(clickState == 1){
 			if(held == NULL){
-				std::cerr << "Impossible" << '\n';
+				std::cerr << "No unit selected" << '\n';
 				return -1;
 			}
 
-			held->setPosition(mouse_location.x - Magic::cell_size / 2.0, mouse_location.y - Magic::cell_size / 2.0);
+			held->setSpritePosition(sf::Vector2f(mouseLocation.x - Magic::cellSize / 2.0, 
+												 mouseLocation.y - Magic::cellSize / 2.0));
 		}
 
 		window.draw(board);
-		Pieces::draw(window);
+		PieceHandler::draw(window, side);
 		if(held != NULL){
-			window.draw(*held);
+			held->draw(window);
 		}
 
 		window.display();

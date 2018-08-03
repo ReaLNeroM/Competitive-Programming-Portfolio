@@ -1,15 +1,22 @@
 #include "helper.h"
 
 namespace Helper {
-	sf::Vector2i get_indices(sf::Vector2i v){
+	sf::Vector2i getIndices(sf::Vector2i v){
 		if(0 <= v.x and v.x < Magic::size and 0 <= v.y and v.y < Magic::size){
-			return sf::Vector2i(v.x / Magic::cell_size, v.y / Magic::cell_size);
+			return sf::Vector2i(v.x / Magic::cellSize, v.y / Magic::cellSize);
 		} else {
 			return sf::Vector2i(-1, -1);
 		}
 	}
-	sf::Vector2i get_location(sf::Vector2i v){
-		v = get_indices(v);
-		return sf::Vector2i(v.x * Magic::cell_size, v.y * Magic::cell_size);
+	
+	sf::Vector2f getLocation(sf::Vector2i v){
+		v = getIndices(v);
+		return sf::Vector2f(v.x * Magic::cellSize, v.y * Magic::cellSize);
+	}
+
+	bool withinBounds(sf::Vector2i pos){
+		if(0 <= pos.x and pos.x < Magic::boardSize and 0 <= pos.y and pos.y < Magic::boardSize){
+			return true;
+		}
 	}
 }
