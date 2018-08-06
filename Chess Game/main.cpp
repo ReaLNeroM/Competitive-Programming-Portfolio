@@ -6,13 +6,15 @@
 #include "magic.h"
 #include "helper.h"
 #include "piece.h"
-#include "pieceHandler.h"
+#include "board.h"
+#include "gameHandler.h"
+#include "chessAI.h"
 
-int main(){
+ int main(){
 	sf::RenderWindow window(sf::VideoMode(Magic::size, Magic::size), "It Works!");
 	window.setFramerateLimit(60);
 
-	PieceHandler::init();
+	BoardStructure::init();
 
 	sf::Texture boardImage;
 	boardImage.loadFromFile(Magic::boardString);
@@ -26,7 +28,7 @@ int main(){
 	int clickState = 0;
 	Piece::Base *held = NULL;
 
-	Magic::color side = Magic::color::white;
+	auto x = AI::getBestMove();
 
 	while (window.isOpen()){
 		sf::Event event;
@@ -37,26 +39,24 @@ int main(){
 				window.close();
 			} else if(event.type == sf::Event::MouseButtonPressed){
 				if(event.mouseButton.button == sf::Mouse::Left){
-					held = PieceHandler::find(mouseLocation);
+					held = BoardStructure::find(mouseLocation);
 
-					if(held->getColor() != side){
-						held = NULL;
-					} else {
+					if(held != NULL){
 						clickState = 1;
 					}
+				} else if(event.mouseButton.button == sf::Mouse::Right){
+					BoardStructure::undoMove();
+					x = AI::getBestMove();
 				}
 			} else if(event.type == sf::Event::MouseButtonReleased){
 				if(clickState != 1 or held == NULL){
 					continue;
 				}
 
-				if(held->attemptMove(PieceHandler::board, Helper::getIndices(mouseLocation))){
-					if(side == Magic::color::white){
-						side = Magic::color::black;
-					} else {
-						side = Magic::color::white;
-					}
-				}
+				GameHandler::attemptMove(*held, Helper::getIndices(mouseLocation), true);
+
+				x = AI::getBestMove();
+				GameHandler::checkWin();
 
 				clickState = 2;
 				held = NULL;
@@ -74,11 +74,25 @@ int main(){
 		}
 
 		window.draw(board);
-		PieceHandler::draw(window, side);
+
+		sf::ConvexShape convex;
+		convex.setPointCount(3);
+
+		sf::Vector2f startPos = sf::Vector2f(x.first.x * Magic::cellSize, x.first.y * Magic::cellSize);
+		sf::Vector2f nextPos = sf::Vector2f(x.second.x * Magic::cellSize, x.second.y * Magic::cellSize);
+		sf::CircleShape startPosCircle(Magic::cellSize / 2.0);
+		sf::CircleShape nextPosCircle(Magic::cellSize / 2.0);
+		startPosCircle.setFillColor(sf::Color::Green);
+		nextPosCircle.setFillColor(sf::Color::Red);
+		startPosCircle.setPosition(startPos);
+		nextPosCircle.setPosition(nextPos);
+		window.draw(startPosCircle);
+		window.draw(nextPosCircle);
+
+		BoardStructure::drawPieces(window);
 		if(held != NULL){
 			held->draw(window);
 		}
-
 		window.display();
 	}
 

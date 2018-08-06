@@ -18,5 +18,17 @@ namespace Helper {
 		if(0 <= pos.x and pos.x < Magic::boardSize and 0 <= pos.y and pos.y < Magic::boardSize){
 			return true;
 		}
+
+		return false;
+	}
+
+	Magic::color getOtherColor(Magic::color currColor){
+		if(currColor == Magic::color::white){
+			return Magic::color::black;
+		} else if(currColor == Magic::color::black){
+			return Magic::color::white;
+		}
+
+		return Magic::color::none;
 	}
 }
