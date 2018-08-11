@@ -3,16 +3,20 @@
 
 static int A[5005];
 
+int query(int a, int b){
+	return ask(a - 1, b - 1);
+}
+
 void detect_pitch(int N) {
 	A[1] = 0;
-	A[2] = ask(1, 2);
+	A[2] = query(1, 2);
 
 	int above_pos = 2;
 	int below_pos = 1;
 
 	for(int i = 3; i <= N; i++){
-		int a = ask(above_pos, i);
-		int b = ask(below_pos, i);
+		int a = query(above_pos, i);
+		int b = query(below_pos, i);
 
 		if(above_pos > below_pos){
 			if(b == A[above_pos] - A[below_pos]){
@@ -54,6 +58,9 @@ void detect_pitch(int N) {
 	}
 
 	for(int i = 1; i <= N; i++) {
-		answer(i, A[i]);
+		A[i]--;
+		std::swap(A[i], A[i - 1]);
 	}
+	for(int i = 0; i < N; i++)
+		answer(i, A[i]);
 }

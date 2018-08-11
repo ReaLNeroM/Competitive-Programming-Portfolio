@@ -84,7 +84,7 @@ void update_value(int pos){
 	}
 }
 
-std::vector<int> countScans(std::vector<int> A,std::vector<int> X,std::vector<int> V){
+std::vector<int> count_scans(std::vector<int> A,std::vector<int> X,std::vector<int> V){
 	std::map<int, int> compressor;
 	for(int i = 0; i < A.size(); i++){
 		compressor[A[i]] = 0;
