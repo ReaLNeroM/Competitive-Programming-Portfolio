@@ -7,12 +7,11 @@ int n, k, w;
 std::vector<int> adj[maxn];
 char used[maxn];
 int dist[maxn];
-std::vector<std::vector<int> > added, bestadded;
-bool takenCareOf[maxn];
+std::vector<std::vector<int>> candidates, bestCandidates;
 int taggedDist[maxn];
 
-double score(){
-	double sum = 0.0;
+int score(){
+	int sum = 0;
 
 	for(int i = 0; i < n; i++){
 		memset(used, false, sizeof(used));
@@ -45,13 +44,13 @@ double grade(double w, double w0){
 	double coefficient = 1.0 - w/w0;
 
 	if(n == 1000){
-		return 18.0 * std::pow(20.0, coefficient);
+		return 18.0 * std::min(1.0, std::pow(20.0, coefficient));
 	} else {
-		return 10.0 * std::pow(20.0, coefficient);
+		return 10.0 * std::min(1.0, std::pow(20.0, coefficient));
 	}
 }
 
-void expand(int pos){
+void addNewSource(int pos){
 	std::queue<int> q;
 	q.push(pos);
 	taggedDist[pos] = 0;
@@ -80,51 +79,61 @@ int main(){
 		adj[s].push_back(f);
 	}
 
-	std::srand(4361234);
+	std::srand(std::time(0));
 
-	double bestscore = 1e18;
-	for(int magicJohnson = 1; magicJohnson <= 10; magicJohnson++){
-		std::cerr << magicJohnson << ' ';
+	int bestScore = 1e9;
+	double bestMagic = 0.0;
+	for(int minDistThreshold = 2; minDistThreshold <= 8; minDistThreshold++){
+		std::cerr << minDistThreshold << ' ';
 		std::cout.flush();
-		for(int x = 0; x < 50; x++){
-			for(auto v : added){
+		for(int x = 0; x < 100; x++){
+			for(auto& v : candidates){
 				adj[v[0]].erase(std::find(adj[v[0]].begin(), adj[v[0]].end(), v[1]));
 				adj[v[1]].erase(std::find(adj[v[1]].begin(), adj[v[1]].end(), v[0]));
 			}
 			memset(taggedDist, -1, sizeof(taggedDist));
-			added.clear();
+			candidates.clear();
 
 			int start = std::rand() % n;
-			expand(start);
+			addNewSource(start);
 
-			int probe = 0;
+			int besti = start;
+			int randomNodesIte = 0;
 			for(int curr_k = 0; curr_k < k; curr_k++){
 				int i = std::rand() % n;
-				probe++;
-				if(probe != 100 and (i == start or taggedDist[i] <= magicJohnson)){
+				randomNodesIte++;
+
+				if(taggedDist[i] >= minDistThreshold and (besti == start or taggedDist[besti] > taggedDist[i])){
+					besti = i;
+				}
+				if(randomNodesIte < 250){
 					curr_k--;
 					continue;
 				}
-				probe = 0;
+				randomNodesIte = 0;
+				candidates.push_back({start, besti});
 
-				adj[i].push_back(start);
-				adj[start].push_back(i);
-				expand(i);
+				adj[besti].push_back(start);
+				adj[start].push_back(besti);
+				addNewSource(besti);
+				besti = start;
 
-				added.push_back({start, i});
 			}
 
-			double checkscore = score();
-			if(checkscore < bestscore){
-				bestscore = checkscore;
-				bestadded = added;
+			int checkScore = score();
+			if(checkScore < bestScore){
+				bestScore = checkScore;
+				bestMagic = minDistThreshold;
+				bestCandidates = candidates;
 			}
 		}
 	}
+
 	std::cerr << '\n';
 
-	for(int i = 0; i < added.size(); i++){
-		std::cout << bestadded[i][0] << ' ' << bestadded[i][1] << '\n';
+	for(auto& v : bestCandidates){
+		std::cout << v[0] << ' ' << v[1] << '\n';
 	}
-	std::cerr << grade(bestscore, w) << '\n';
+
+	std::cerr << bestMagic << ' ' << grade(bestScore, w) << '\n';
 }
