@@ -9,8 +9,11 @@ char used[maxn];
 int dist[maxn];
 std::vector<std::vector<int>> candidates, bestCandidates;
 int taggedDist[maxn];
+int biggestdist = 0;
+int bestBiggestDist;
 
 int score(){
+	biggestdist = 0;
 	int sum = 0;
 
 	for(int i = 0; i < n; i++){
@@ -25,6 +28,7 @@ int score(){
 			q.pop();
 			if(i <= fr){
 				sum += dist[fr];
+				biggestdist = std::max(biggestdist, dist[fr]);
 			}
 
 			for(int next : adj[fr]){
@@ -79,12 +83,12 @@ int main(){
 		adj[s].push_back(f);
 	}
 
-	std::srand(std::time(0));
+	std::srand(13451);
 
 	int bestScore = 1e9;
 	double bestMagic = 0.0;
-	for(int minDistThreshold = 2; minDistThreshold <= 8; minDistThreshold++){
-		std::cerr << minDistThreshold << ' ';
+	for(int minDistThreshold = 2; minDistThreshold <= 12; minDistThreshold++){
+		// std::cerr << minDistThreshold << ' ';
 		std::cout.flush();
 		for(int x = 0; x < 100; x++){
 			for(auto& v : candidates){
@@ -106,7 +110,7 @@ int main(){
 				if(taggedDist[i] >= minDistThreshold and (besti == start or taggedDist[besti] > taggedDist[i])){
 					besti = i;
 				}
-				if(randomNodesIte < 250){
+				if(randomNodesIte < 1000 and taggedDist[besti] != minDistThreshold){
 					curr_k--;
 					continue;
 				}
@@ -122,6 +126,7 @@ int main(){
 
 			int checkScore = score();
 			if(checkScore < bestScore){
+				bestBiggestDist = biggestdist;
 				bestScore = checkScore;
 				bestMagic = minDistThreshold;
 				bestCandidates = candidates;
@@ -135,5 +140,5 @@ int main(){
 		std::cout << v[0] << ' ' << v[1] << '\n';
 	}
 
-	std::cerr << bestMagic << ' ' << grade(bestScore, w) << '\n';
+	std::cerr << k << ' ' << bestBiggestDist << ' ' << bestMagic << ' ' << bestScore << ' ' << w << ' ' << grade(bestScore, w) << '\n' << '\n';
 }
