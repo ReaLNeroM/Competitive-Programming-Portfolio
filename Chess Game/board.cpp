@@ -41,16 +41,26 @@ namespace BoardStructure {
 		boardHistorySize = 1;
 	}
 
-	int getBoardValue(){
-		int sum = 0;
+	double getBoardValue(){
+		double sum = 0;
 
 		for(int i = 0; i < Magic::boardSize; i++){
 			for(int j = 0; j < Magic::boardSize; j++){
 				if(!board[i][j].checkDestroyed() and board[i][j].pieceColor != Magic::color::none){
 					if(board[i][j].pieceColor == currMoveColor){
-						sum += Magic::pieceValue[board[i][j].pieceType];
+						sum += Magic::pieceWorthCoefficient * Magic::pieceWorth[board[i][j].pieceType];
+						if(board[i][j].pieceColor == Magic::color::white){
+							sum += Magic::pieceValue[board[i][j].pieceType][i][j];
+						} else {
+							sum += Magic::pieceValue[board[i][j].pieceType][7 - i][j];
+						}
 					} else {
-						sum -= Magic::pieceValue[board[i][j].pieceType];
+						sum -= Magic::pieceWorthCoefficient * Magic::pieceWorth[board[i][j].pieceType];
+						if(board[i][j].pieceColor == Magic::color::white){
+							sum -= Magic::pieceValue[board[i][j].pieceType][i][j];
+						} else {
+							sum -= Magic::pieceValue[board[i][j].pieceType][7 - i][j];
+						}
 					}
 				}
 			}
@@ -78,43 +88,21 @@ namespace BoardStructure {
 		board = boardHistory[boardHistory.size() - 1];
 		currMoveColor = Helper::getOtherColor(currMoveColor);
 
-		for(int i = 0; i < Magic::boardSize; i++){
-			for(int j = 0; j < Magic::boardSize; j++){
-				if(!board[i][j].checkDestroyed()){
-					board[i][j].reloadTexture();
-				}
-			}
-		}
-
 		return true;
 	}
 
 	void recordMove(){
-		for(int i = 0; i < Magic::boardSize; i++){
-			for(int j = 0; j < Magic::boardSize; j++){
-				if(!board[i][j].checkDestroyed()){
-					board[i][j].clearTexture();
-				}
-			}
-		}
-
 		boardHistory.push_back(board);
 		boardHistorySize++;
 		currMoveColor = Helper::getOtherColor(currMoveColor);
-
-		for(int i = 0; i < Magic::boardSize; i++){
-			for(int j = 0; j < Magic::boardSize; j++){
-				if(!board[i][j].checkDestroyed()){
-					board[i][j].reloadTexture();
-				}
-			}
-		}
 	}
 
 	void drawPieces(sf::RenderWindow &window){
+		sf::Sprite x;
+
 		for(int i = 0; i < Magic::boardSize; i++){
 			for(int j = 0; j < Magic::boardSize; j++){
-				if(!board[i][j].checkDestroyed()){
+				if(!board[i][j].checkDestroyed() and board[i][j].pieceColor != Magic::color::none){
 					if(currMoveColor == board[i][j].getColor()){
 						sf::RectangleShape rectangle(sf::Vector2f(Magic::cellSize, Magic::cellSize));
 						rectangle.setPosition(sf::Vector2f(j * Magic::cellSize, i * Magic::cellSize));
@@ -124,7 +112,11 @@ namespace BoardStructure {
 						window.draw(rectangle);
 					}
 
-					board[i][j].draw(window);
+					x.setPosition(sf::Vector2f(board[i][j].boardPos.x * Magic::cellSize, board[i][j].boardPos.y * Magic::cellSize));
+					x.setTexture(Magic::pieceTextures[board[i][j].pieceColor][board[i][j].pieceType]);
+					x.setScale(sf::Vector2f((double) Magic::cellSize / Magic::pieceTextures[board[i][j].pieceColor][board[i][j].pieceType].getSize().x, 
+											   (double) Magic::cellSize / Magic::pieceTextures[board[i][j].pieceColor][board[i][j].pieceType].getSize().y));
+					window.draw(x);
 				}
 			}
 		}

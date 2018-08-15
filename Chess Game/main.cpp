@@ -44,7 +44,7 @@
 					if(held != NULL){
 						clickState = 1;
 					}
-				} else if(event.mouseButton.button == sf::Mouse::Right){
+				} else if(event.mouseButton.button == sf::Mouse::Right and held == NULL){
 					BoardStructure::undoMove();
 					x = AI::getBestMove();
 				}
@@ -53,30 +53,18 @@
 					continue;
 				}
 
-				GameHandler::attemptMove(*held, Helper::getIndices(mouseLocation), true);
-
-				x = AI::getBestMove();
-				GameHandler::checkWin();
+				if(GameHandler::attemptMove(*held, Helper::getIndices(mouseLocation), true)){
+					x = AI::getBestMove();
+					GameHandler::checkWin();
+				}			
 
 				clickState = 2;
 				held = NULL;
 			}
 		}
 
-		if(clickState == 1){
-			if(held == NULL){
-				std::cerr << "No unit selected" << '\n';
-				return -1;
-			}
-
-			held->setSpritePosition(sf::Vector2f(mouseLocation.x - Magic::cellSize / 2.0, 
-												 mouseLocation.y - Magic::cellSize / 2.0));
-		}
 
 		window.draw(board);
-
-		sf::ConvexShape convex;
-		convex.setPointCount(3);
 
 		sf::Vector2f startPos = sf::Vector2f(x.first.x * Magic::cellSize, x.first.y * Magic::cellSize);
 		sf::Vector2f nextPos = sf::Vector2f(x.second.x * Magic::cellSize, x.second.y * Magic::cellSize);
@@ -89,11 +77,30 @@
 		window.draw(startPosCircle);
 		window.draw(nextPosCircle);
 
-		BoardStructure::drawPieces(window);
-		if(held != NULL){
-			held->draw(window);
+		if(clickState == 1){
+			if(held == NULL){
+				std::cerr << "No unit selected" << '\n';
+				return -1;
+			}
+
+			held->cleared = true;
+
+			sf::Sprite x;
+			x.setPosition(sf::Vector2f(mouseLocation.x - Magic::cellSize / 2.0, 
+												 mouseLocation.y - Magic::cellSize / 2.0));
+			x.setScale(sf::Vector2f((double) Magic::cellSize / Magic::pieceTextures[held->pieceColor][held->pieceType].getSize().x, 
+											   (double) Magic::cellSize / Magic::pieceTextures[held->pieceColor][held->pieceType].getSize().y));
+   			x.setTexture(Magic::pieceTextures[held->pieceColor][held->pieceType]);
+			window.draw(x);
 		}
+
+		BoardStructure::drawPieces(window);
+
 		window.display();
+
+		if(clickState == 1 and held != NULL){
+			held->cleared = false;
+		}
 	}
 
 	return 0;

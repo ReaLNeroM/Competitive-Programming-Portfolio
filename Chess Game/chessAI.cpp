@@ -16,8 +16,8 @@ namespace AI {
 		return 0;
 	}
 
-	std::pair<int, std::pair<sf::Vector2i, sf::Vector2i>> dfs(int movesLeft){
-		int checkValue = checkWin();
+	std::pair<double, std::pair<sf::Vector2i, sf::Vector2i>> dfs(int movesLeft, double alpha, double beta){
+		double checkValue = checkWin();
 
 		if(checkValue == -INF or checkValue == -1){
 			return {checkValue, {sf::Vector2i(0, 0), sf::Vector2i(0, 0)}};
@@ -27,7 +27,7 @@ namespace AI {
 			return {BoardStructure::getBoardValue(), {sf::Vector2i(0, 0), sf::Vector2i(0, 0)}};
 		}
 
-		std::pair<int, std::pair<sf::Vector2i, sf::Vector2i>> bestAction = {-INF, {sf::Vector2i(0, 0), sf::Vector2i(0, 0)}};
+		std::pair<double, std::pair<sf::Vector2i, sf::Vector2i>> bestAction = {-INF, {sf::Vector2i(0, 0), sf::Vector2i(0, 0)}};
 
 		for(int i = 0; i < Magic::boardSize; i++){
 			for(int j = 0; j < Magic::boardSize; j++){
@@ -41,7 +41,7 @@ namespace AI {
 																									BoardStructure::board[newPos.y][newPos.x].pieceColor != BoardStructure::currMoveColor)){
 								if(GameHandler::validatePieceMove(startPos, newPos, BoardStructure::board[startPos.y][startPos.x], false) and
 									 GameHandler::attemptMove(BoardStructure::board[startPos.y][startPos.x], newPos, false)){
-									auto response = dfs(movesLeft - 1);
+									auto response = dfs(movesLeft - 1, alpha, beta);
 									response.first *= -1;
 									if(response.first > bestAction.first){
 										bestAction = response;
@@ -49,6 +49,16 @@ namespace AI {
 									}
 
 									BoardStructure::undoMove();
+
+									if(BoardStructure::currMoveColor == Magic::color::white){
+										alpha = std::max(alpha, response.first);
+									} else {
+										beta = std::min(beta, -response.first);
+									}
+
+									if(alpha >= beta){
+										i = j = k = l = Magic::boardSize;
+									}
 								}
 							}
 						}
@@ -61,7 +71,10 @@ namespace AI {
 	} 
 
 	std::pair<sf::Vector2i, sf::Vector2i> getBestMove(){
-		auto x = dfs(4);
+		if(BoardStructure::currMoveColor == Magic::black){
+			return dfs(0, 0, 0).second;
+		}
+		auto x = dfs(6, -INF, INF);
 		return x.second;
 	}
 }

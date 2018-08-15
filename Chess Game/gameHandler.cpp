@@ -93,19 +93,16 @@ namespace GameHandler {
 
 		if(!Helper::withinBounds(newPos) or startPos == newPos or (!BoardStructure::board[newPos.y][newPos.x].checkDestroyed() and
 																	BoardStructure::board[newPos.y][newPos.x].pieceColor == currPiece.pieceColor)){
-			currPiece.pieceSprite.setPosition(sf::Vector2f(startPos * Magic::cellSize));
 			return false;
 		}
 
 
 		if(!validatePieceMove(startPos, newPos, currPiece, true)){
-			currPiece.pieceSprite.setPosition(sf::Vector2f(startPos * Magic::cellSize));
 			return false;
 		}
 
 		currPiece.moveId = BoardStructure::boardHistorySize;
 
-		currPiece.pieceSprite.setPosition(sf::Vector2f(newPos * Magic::cellSize));
 		currPiece.boardPos = newPos;
 
 		BoardStructure::board[newPos.y][newPos.x].setDestroyed();
@@ -316,11 +313,11 @@ namespace GameHandler {
 			if(newPos.x == 1){
 				Piece::Base& partnerRook = BoardStructure::board[newPos.y][newPos.x - 1];
 
-				if(!partnerRook.checkDestroyed() and
+				if(!isAttacked(boardPos, Helper::getOtherColor(currPiece.pieceColor)) and !partnerRook.checkDestroyed() and
 						partnerRook.getColor() == currPiece.getColor() and
 						partnerRook.moveId == 0 and 
 						BoardStructure::board[newPos.y][newPos.x + 1].checkDestroyed() and
-						rookValidateMove(partnerRook.boardPos, sf::Vector2i(boardPos.x - 1, boardPos.y))){
+						rookValidateMove(partnerRook.boardPos, sf::Vector2i(boardPos.x, boardPos.y))){
 					if(performMovement){
 						partnerRook.setPosition(sf::Vector2i(newPos.x + 1, newPos.y));
 						std::swap(BoardStructure::board[newPos.y][newPos.x - 1], BoardStructure::board[newPos.y][newPos.x + 1]);
@@ -330,11 +327,11 @@ namespace GameHandler {
 			} else if(newPos.x == Magic::boardSize - 2){
 				Piece::Base& partnerRook = BoardStructure::board[newPos.y][newPos.x + 1];
 
-				if(!partnerRook.checkDestroyed() and
+				if(!isAttacked(boardPos, Helper::getOtherColor(currPiece.pieceColor)) and !partnerRook.checkDestroyed() and
 						partnerRook.getColor() == currPiece.getColor() and
 						partnerRook.moveId == 0 and 
 						BoardStructure::board[newPos.y][newPos.x - 1].checkDestroyed() and
-						rookValidateMove(partnerRook.boardPos, sf::Vector2i(boardPos.x + 1, boardPos.y))){
+						rookValidateMove(partnerRook.boardPos, sf::Vector2i(boardPos.x, boardPos.y))){
 					if(performMovement){
 						partnerRook.setPosition(sf::Vector2i(newPos.x - 1, newPos.y));
 						std::swap(BoardStructure::board[newPos.y][newPos.x - 1], BoardStructure::board[newPos.y][newPos.x + 1]);
