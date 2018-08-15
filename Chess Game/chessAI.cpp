@@ -17,11 +17,11 @@ namespace AI {
 	}
 
 	std::pair<int, std::pair<sf::Vector2i, sf::Vector2i>> dfs(int movesLeft){
-		// int checkValue = checkWin();
+		int checkValue = checkWin();
 
-		// if(checkValue == -INF or checkValue == -1){
-		// 	return {checkValue, {sf::Vector2i(0, 0), sf::Vector2i(0, 0)}};
-		// }
+		if(checkValue == -INF or checkValue == -1){
+			return {checkValue, {sf::Vector2i(0, 0), sf::Vector2i(0, 0)}};
+		}
 
 		if(movesLeft == 0){
 			return {BoardStructure::getBoardValue(), {sf::Vector2i(0, 0), sf::Vector2i(0, 0)}};
@@ -42,7 +42,8 @@ namespace AI {
 								if(GameHandler::validatePieceMove(startPos, newPos, BoardStructure::board[startPos.y][startPos.x], false) and
 									 GameHandler::attemptMove(BoardStructure::board[startPos.y][startPos.x], newPos, false)){
 									auto response = dfs(movesLeft - 1);
-									if(-response.first > bestAction.first){
+									response.first *= -1;
+									if(response.first > bestAction.first){
 										bestAction = response;
 										bestAction.second = {startPos, newPos};
 									}

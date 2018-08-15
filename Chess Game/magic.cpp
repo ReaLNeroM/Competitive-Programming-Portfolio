@@ -1,7 +1,7 @@
 #include "magic.h"
 
 namespace Magic {
-	const int size = 1920;
+	const int size = 512;
 	const int boardSize = 8;
 	const int cellSize = size / boardSize;
 	const int pieces = 7;

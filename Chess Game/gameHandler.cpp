@@ -305,7 +305,6 @@ namespace GameHandler {
 	}
 	
 	bool kingValidateMove(sf::Vector2i boardPos, sf::Vector2i newPos, Piece::Base& currPiece, bool performMovement){
-		return false;
 		sf::Vector2i newPosCopy = newPos - boardPos;
 		int a = std::abs(newPosCopy.x), b = std::abs(newPosCopy.y);
 
