@@ -24,6 +24,7 @@ namespace Magic {
 	extern const int cellSize;
 	extern const int pieces;
 	extern const double pieceWorthCoefficient;
+	extern const int propagationLimit;
 
 	extern type initialType[8][8];
 	extern color initialColor[8][8];

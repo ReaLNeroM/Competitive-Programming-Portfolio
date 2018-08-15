@@ -16,18 +16,19 @@ namespace AI {
 		return 0;
 	}
 
-	std::pair<double, std::pair<sf::Vector2i, sf::Vector2i>> dfs(int movesLeft, double alpha, double beta){
+	std::pair<sf::Vector2i, sf::Vector2i> bestFirstAction;
+	double dfs(int movesLeft, double alpha, double beta){
 		double checkValue = checkWin();
 
 		if(checkValue == -INF or checkValue == -1){
-			return {checkValue, {sf::Vector2i(0, 0), sf::Vector2i(0, 0)}};
+			return checkValue;
 		}
 
 		if(movesLeft == 0){
-			return {BoardStructure::getBoardValue(), {sf::Vector2i(0, 0), sf::Vector2i(0, 0)}};
+			return BoardStructure::getBoardValue();
 		}
 
-		std::pair<double, std::pair<sf::Vector2i, sf::Vector2i>> bestAction = {-INF, {sf::Vector2i(0, 0), sf::Vector2i(0, 0)}};
+		double bestAction = -INF;
 
 		for(int i = 0; i < Magic::boardSize; i++){
 			for(int j = 0; j < Magic::boardSize; j++){
@@ -42,18 +43,20 @@ namespace AI {
 								if(GameHandler::validatePieceMove(startPos, newPos, BoardStructure::board[startPos.y][startPos.x], false) and
 									 GameHandler::attemptMove(BoardStructure::board[startPos.y][startPos.x], newPos, false)){
 									auto response = dfs(movesLeft - 1, alpha, beta);
-									response.first *= -1;
-									if(response.first > bestAction.first){
+									response *= -1;
+									if(response > bestAction){
 										bestAction = response;
-										bestAction.second = {startPos, newPos};
+										if(movesLeft == Magic::propagationLimit){
+											bestFirstAction = {startPos, newPos};
+										}
 									}
 
 									BoardStructure::undoMove();
 
 									if(BoardStructure::currMoveColor == Magic::color::white){
-										alpha = std::max(alpha, response.first);
+										alpha = std::max(alpha, response);
 									} else {
-										beta = std::min(beta, -response.first);
+										beta = std::min(beta, -response);
 									}
 
 									if(alpha >= beta){
@@ -71,10 +74,11 @@ namespace AI {
 	} 
 
 	std::pair<sf::Vector2i, sf::Vector2i> getBestMove(){
+		bestFirstAction = {{-1, -1}, {-1, -1}};
 		if(BoardStructure::currMoveColor == Magic::white){
-			return {{-1, -1}, {-1, -1}};
+			return bestFirstAction;
 		}
-		auto x = dfs(5, -INF, INF);
-		return x.second;
+		dfs(Magic::propagationLimit, -INF, INF);
+		return bestFirstAction;
 	}
 }
