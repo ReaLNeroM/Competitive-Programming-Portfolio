@@ -310,7 +310,7 @@ namespace GameHandler {
 		}
 
 		if(currPiece.moveId == 0 and boardPos.y == newPos.y){
-			if(newPos.x == 1){
+			if(newPos.x == 2){
 				Piece::Base& partnerRook = BoardStructure::board[newPos.y][newPos.x - 1];
 
 				if(!isAttacked(boardPos, Helper::getOtherColor(currPiece.pieceColor)) and !partnerRook.checkDestroyed() and

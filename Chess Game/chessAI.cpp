@@ -1,9 +1,9 @@
 #include "chessAI.h"
 
 namespace AI {
-	const int INF = 10000;
+	const double INF = 1e9;
 
-	int checkWin(){
+	double checkWin(){
 		bool check = GameHandler::isKingAttacked(BoardStructure::currMoveColor);
 		bool movesLeft = GameHandler::movePossible(BoardStructure::currMoveColor, check);
 
@@ -71,10 +71,10 @@ namespace AI {
 	} 
 
 	std::pair<sf::Vector2i, sf::Vector2i> getBestMove(){
-		if(BoardStructure::currMoveColor == Magic::black){
-			return dfs(0, 0, 0).second;
+		if(BoardStructure::currMoveColor == Magic::white){
+			return {{-1, -1}, {-1, -1}};
 		}
-		auto x = dfs(6, -INF, INF);
+		auto x = dfs(5, -INF, INF);
 		return x.second;
 	}
 }

@@ -66,16 +66,19 @@
 
 		window.draw(board);
 
-		sf::Vector2f startPos = sf::Vector2f(x.first.x * Magic::cellSize, x.first.y * Magic::cellSize);
-		sf::Vector2f nextPos = sf::Vector2f(x.second.x * Magic::cellSize, x.second.y * Magic::cellSize);
-		sf::CircleShape startPosCircle(Magic::cellSize / 2.0);
-		sf::CircleShape nextPosCircle(Magic::cellSize / 2.0);
-		startPosCircle.setFillColor(sf::Color::Green);
-		nextPosCircle.setFillColor(sf::Color::Red);
-		startPosCircle.setPosition(startPos);
-		nextPosCircle.setPosition(nextPos);
-		window.draw(startPosCircle);
-		window.draw(nextPosCircle);
+		if(x != std::pair<sf::Vector2i,sf::Vector2i>{{-1, -1}, {-1, -1}}){
+			// GameHandler::attemptMove(BoardStructure::board[x.first.y][x.first.x], x.second, false);
+			sf::Vector2f startPos = sf::Vector2f(x.first.x * Magic::cellSize, x.first.y * Magic::cellSize);
+			sf::Vector2f nextPos = sf::Vector2f(x.second.x * Magic::cellSize, x.second.y * Magic::cellSize);
+			sf::CircleShape startPosCircle(Magic::cellSize / 2.0);
+			sf::CircleShape nextPosCircle(Magic::cellSize / 2.0);
+			startPosCircle.setFillColor(sf::Color::Green);
+			nextPosCircle.setFillColor(sf::Color::Red);
+			startPosCircle.setPosition(startPos);
+			nextPosCircle.setPosition(nextPos);
+			window.draw(startPosCircle);
+			window.draw(nextPosCircle);
+		}
 
 		if(clickState == 1){
 			if(held == NULL){

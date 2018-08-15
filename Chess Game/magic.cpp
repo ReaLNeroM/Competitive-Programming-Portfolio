@@ -90,7 +90,7 @@ namespace Magic {
 		{ 20, 30, 10,  0,  0, 10, 30, 20}}
 	};
 
-	const double pieceWorthCoefficient = 8.0;
+	const double pieceWorthCoefficient = 40.0;
 	double pieceWorth[7] = {0, 1, 3.05, 3.50, 5.48, 9.94, 100000.0};
 	std::string location[][pieces] = {
 		{"img/blank.png", 
