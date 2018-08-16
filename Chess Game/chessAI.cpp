@@ -10,7 +10,7 @@ namespace AI {
 		if(check and !movesLeft){
 			return -INF;
 		} else if(!movesLeft){
-			return INF;
+			return INF/2.0;
 		}
 
 		return 0;
@@ -20,7 +20,7 @@ namespace AI {
 	double dfs(int movesLeft, double alpha, double beta){
 		double checkValue = checkWin();
 
-		if(checkValue == -INF or checkValue == INF){
+		if(checkValue != 0.0){
 			return checkValue;
 		}
 
@@ -28,7 +28,7 @@ namespace AI {
 			return BoardStructure::getBoardValue();
 		}
 
-		double bestAction = -INF;
+		double bestAction = -2.0*INF;
 
 		for(int i = 0; i < Magic::boardSize; i++){
 			for(int j = 0; j < Magic::boardSize; j++){

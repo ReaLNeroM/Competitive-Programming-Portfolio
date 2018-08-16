@@ -314,7 +314,7 @@ namespace GameHandler {
 
 		if(currPiece.moveId == 0 and boardPos.y == newPos.y){
 			if(newPos.x == 2){
-				Piece::Base& partnerRook = BoardStructure::board[newPos.y][newPos.x - 1];
+				Piece::Base& partnerRook = BoardStructure::board[newPos.y][newPos.x - 2];
 
 				if(!isAttacked(boardPos, Helper::getOtherColor(currPiece.pieceColor)) and !partnerRook.checkDestroyed() and
 						partnerRook.getColor() == currPiece.getColor() and
@@ -323,7 +323,7 @@ namespace GameHandler {
 						rookValidateMove(partnerRook.boardPos, sf::Vector2i(boardPos.x, boardPos.y))){
 					if(performMovement){
 						partnerRook.setPosition(sf::Vector2i(newPos.x + 1, newPos.y));
-						std::swap(BoardStructure::board[newPos.y][newPos.x - 1], BoardStructure::board[newPos.y][newPos.x + 1]);
+						std::swap(BoardStructure::board[newPos.y][newPos.x - 2], BoardStructure::board[newPos.y][newPos.x + 1]);
 					}
 					return true;
 				}

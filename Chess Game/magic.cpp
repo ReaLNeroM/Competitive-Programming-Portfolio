@@ -91,7 +91,7 @@ namespace Magic {
 		{ 20, 30, 10,  0,  0, 10, 30, 20}}
 	};
 
-	const int propagationLimit = 5;
+	const int propagationLimit = 6;
 	const double pieceWorthCoefficient = 50.0;
 	double pieceWorth[7] = {0, 1, 3.2, 3.33, 5.1, 8.8, 100000.0};
 	std::string location[][pieces] = {
