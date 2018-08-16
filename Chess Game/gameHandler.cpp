@@ -76,7 +76,7 @@ namespace GameHandler {
 			} else {
 				std::cout << "white!\n";
 			}
-			exit(0);
+			BoardStructure::kill = true;
 		} else if(!movesLeft){
 			std::cout << "Draw from ";
 			if(BoardStructure::currMoveColor == Magic::color::black){
@@ -84,13 +84,15 @@ namespace GameHandler {
 			} else {
 				std::cout << "white!\n";
 			}
-			exit(0);
 		}
 
 		return false;
 	}
 
 	bool attemptMove(Piece::Base& currPiece, sf::Vector2i newPos, bool queryForPawnUpgrade){
+		if(BoardStructure::kill){
+			return false;
+		}
 		sf::Vector2i startPos = currPiece.getBoardPos();
 
 		if(!Helper::withinBounds(newPos) or startPos == newPos or (!BoardStructure::board[newPos.y][newPos.x].checkDestroyed() and

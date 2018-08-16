@@ -3,6 +3,7 @@
 #include <cstdlib> 
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "magic.h"
 #include "helper.h"
 #include "piece.h"
@@ -15,6 +16,10 @@
 	window.setFramerateLimit(60);
 
 	BoardStructure::init();
+	sf::SoundBuffer buffer;
+	buffer.loadFromFile("Move.ogg");
+	sf::Sound sound;
+	sound.setBuffer(buffer);
 
 	sf::Texture boardImage;
 	boardImage.loadFromFile(Magic::boardString);
@@ -27,6 +32,8 @@
 
 	int clickState = 0;
 	Piece::Base *held = NULL;
+
+	std::pair<sf::Vector2i, sf::Vector2i> lastMove = {{-1, -1}, {-1, -1}};
 
 	auto x = AI::getBestMove();
 	bool moved = false;
@@ -47,7 +54,8 @@
 					}
 				} else if(event.mouseButton.button == sf::Mouse::Right){
 					BoardStructure::undoMove();
-					x = AI::getBestMove();
+					lastMove = std::pair<sf::Vector2i, sf::Vector2i>{{-1, -1}, {-1, -1}};
+					x = std::pair<sf::Vector2i,sf::Vector2i>{{-1, -1}, {-1, -2}};
 					moved = true;
 				}
 			} else if(event.type == sf::Event::MouseButtonReleased){
@@ -55,10 +63,13 @@
 					continue;
 				}
 
+				sf::Vector2i prevBoardPos = held->boardPos;
 				if(GameHandler::attemptMove(*held, Helper::getIndices(mouseLocation), true)){
-					x = AI::getBestMove();
+					lastMove = {prevBoardPos, Helper::getIndices(mouseLocation)};
+					x = std::pair<sf::Vector2i,sf::Vector2i>{{-1, -1}, {-1, -2}};
 					moved = false;
 					GameHandler::checkWin();
+					sound.play();
 				}			
 
 				clickState = 2;
@@ -66,17 +77,20 @@
 			}
 		}
 
-
 		window.draw(board);
 
-		if(x != std::pair<sf::Vector2i,sf::Vector2i>{{-1, -1}, {-1, -1}}){
-			if(!moved){
-				GameHandler::attemptMove(BoardStructure::board[x.first.y][x.first.x], x.second, false);
+		if(x != std::pair<sf::Vector2i,sf::Vector2i>{{-1, -1}, {-1, -1}} and 
+			x != std::pair<sf::Vector2i,sf::Vector2i>{{-1, -1}, {-1, -2}}){
+			if(!moved and GameHandler::attemptMove(BoardStructure::board[x.first.y][x.first.x], x.second, false)){
+				lastMove = x;
+				sound.play();
 				GameHandler::checkWin();
 			}
 			moved = true;
-			sf::Vector2f startPos = sf::Vector2f(x.first.x * Magic::cellSize, x.first.y * Magic::cellSize);
-			sf::Vector2f nextPos = sf::Vector2f(x.second.x * Magic::cellSize, x.second.y * Magic::cellSize);
+		}
+		if(lastMove != std::pair<sf::Vector2i, sf::Vector2i>{{-1, -1}, {-1, -1}}){
+			sf::Vector2f startPos = sf::Vector2f(lastMove.first.x * Magic::cellSize, lastMove.first.y * Magic::cellSize);
+			sf::Vector2f nextPos = sf::Vector2f(lastMove.second.x * Magic::cellSize, lastMove.second.y * Magic::cellSize);
 			sf::CircleShape startPosCircle(Magic::cellSize / 2.0);
 			sf::CircleShape nextPosCircle(Magic::cellSize / 2.0);
 			startPosCircle.setFillColor(sf::Color::Green);
@@ -86,6 +100,7 @@
 			window.draw(startPosCircle);
 			window.draw(nextPosCircle);
 		}
+
 
 		if(clickState == 1){
 			if(held == NULL){
@@ -108,6 +123,10 @@
 
 		window.display();
 
+		if(x == std::pair<sf::Vector2i,sf::Vector2i>{{-1, -1}, {-1, -2}}){
+			x = AI::getBestMove();
+		}
+		
 		if(clickState == 1 and held != NULL){
 			held->cleared = false;
 		}
