@@ -10,7 +10,7 @@ namespace AI {
 		if(check and !movesLeft){
 			return -INF;
 		} else if(!movesLeft){
-			return -1;
+			return INF;
 		}
 
 		return 0;
@@ -20,7 +20,7 @@ namespace AI {
 	double dfs(int movesLeft, double alpha, double beta){
 		double checkValue = checkWin();
 
-		if(checkValue == -INF or checkValue == -1){
+		if(checkValue == -INF or checkValue == INF){
 			return checkValue;
 		}
 
@@ -75,7 +75,7 @@ namespace AI {
 
 	std::pair<sf::Vector2i, sf::Vector2i> getBestMove(){
 		bestFirstAction = {{-1, -1}, {-1, -1}};
-		if(BoardStructure::currMoveColor == Magic::white){
+		if(BoardStructure::currMoveColor != Magic::focusColor){
 			return bestFirstAction;
 		}
 		dfs(Magic::propagationLimit, -INF, INF);

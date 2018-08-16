@@ -5,6 +5,7 @@ namespace Magic {
 	const int boardSize = 8;
 	const int cellSize = size / boardSize;
 	const int pieces = 7;
+	color focusColor = Magic::color::black;
 
 	type initialType[][boardSize] = {
 	    { rook , knight, bishop , queen , king , bishop, knight, rook  },

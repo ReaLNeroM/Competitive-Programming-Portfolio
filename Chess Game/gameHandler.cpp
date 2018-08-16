@@ -1,6 +1,8 @@
 #include "gameHandler.h"
 
 namespace GameHandler {
+	BoardStructure::BoardState board;
+	
 	bool isAttacked(sf::Vector2i boardPos, Magic::color attackingColor){
 		assert(BoardStructure::board[boardPos.y][boardPos.x].pieceColor != attackingColor);
 
@@ -209,7 +211,8 @@ namespace GameHandler {
 			}
 		} else if((boardPos.x - 1 == newPos.x or boardPos.x + 1 == newPos.x) and boardPos.y + step == newPos.y and !BoardStructure::board[newPos.y][newPos.x].checkDestroyed()){
 			return true;
-		} else if((boardPos.x - 1 == newPos.x or boardPos.x + 1 == newPos.x) and boardPos.y + step == newPos.y and !BoardStructure::board[boardPos.y][newPos.x].checkDestroyed()
+		} else if((boardPos.x - 1 == newPos.x or boardPos.x + 1 == newPos.x) and boardPos.y + step == newPos.y and ((step == 1 and boardPos.y == 4) or (step == -1 and boardPos.y == 3))
+																				and !BoardStructure::board[boardPos.y][newPos.x].checkDestroyed()
 																				and BoardStructure::board[boardPos.y][newPos.x].pieceColor != currPiece.pieceColor
 																			  	and BoardStructure::board[boardPos.y][newPos.x].pieceType == Magic::type::pawn
 																			  	and BoardStructure::board[boardPos.y][newPos.x].moveId + 1 == BoardStructure::boardHistorySize

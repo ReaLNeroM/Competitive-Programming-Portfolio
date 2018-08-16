@@ -29,7 +29,7 @@
 	Piece::Base *held = NULL;
 
 	auto x = AI::getBestMove();
-	bool moved = true;
+	bool moved = false;
 
 	while (window.isOpen()){
 		sf::Event event;
@@ -45,7 +45,7 @@
 					if(held != NULL){
 						clickState = 1;
 					}
-				} else if(event.mouseButton.button == sf::Mouse::Right and held == NULL){
+				} else if(event.mouseButton.button == sf::Mouse::Right){
 					BoardStructure::undoMove();
 					x = AI::getBestMove();
 					moved = false;
@@ -70,10 +70,11 @@
 		window.draw(board);
 
 		if(x != std::pair<sf::Vector2i,sf::Vector2i>{{-1, -1}, {-1, -1}}){
-			if(!moved){
-				GameHandler::attemptMove(BoardStructure::board[x.first.y][x.first.x], x.second, false);
-			}
-			moved = true;
+			// if(!moved){
+			// 	GameHandler::attemptMove(BoardStructure::board[x.first.y][x.first.x], x.second, false);
+			// 	GameHandler::checkWin();
+			// }
+			// moved = true;
 			sf::Vector2f startPos = sf::Vector2f(x.first.x * Magic::cellSize, x.first.y * Magic::cellSize);
 			sf::Vector2f nextPos = sf::Vector2f(x.second.x * Magic::cellSize, x.second.y * Magic::cellSize);
 			sf::CircleShape startPosCircle(Magic::cellSize / 2.0);
