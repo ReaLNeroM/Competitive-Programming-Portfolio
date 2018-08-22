@@ -22,7 +22,7 @@ namespace BoardStructure {
 		}
 	};
 
-	extern bool kill;
+	extern bool gameEnded;
 	extern std::vector<BoardState> boardHistory;
 	extern BoardState board;
 	extern int boardHistorySize;

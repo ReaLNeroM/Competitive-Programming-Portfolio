@@ -11,19 +11,23 @@ std::map<int, int> m, rev;
 std::vector<int> adj[maxn];
 
 int good(int query){
-	for(int i = 0; i < n; i++){
+	for(int i = 0; i <= n; i++){
 		adj[i].clear();
 		par[i] = -1;
 	}
+
+	int edges = 0;
 
 	for(int i = 0; i < n; i++){
 		if(query < a[i]){
 			return false;
 		} else if(a[i] <= query and query < b[i]){
 			adj[a[i]].push_back(a[i]);
+			edges += 1;
 		} else {
 			adj[a[i]].push_back(b[i]);
 			adj[b[i]].push_back(a[i]);
+			edges += 1;
 		}
 	}
 
@@ -31,6 +35,7 @@ int good(int query){
 		if(par[i] == -1){
 			std::queue<int> q;
 			q.push(i);
+			par[i] = -2;
 			dist[i] = 0;
 
 			int floop = -1, sloop = -1;
@@ -58,6 +63,13 @@ int good(int query){
 		}
 	}
 
+	int vertices = 0;
+	for(int i = 1; i <= n; i++){
+		if(par[i] != -1){
+			vertices++;
+		}
+	}
+
 	std::fill(par, par + n + 1, -1);
 	std::fill(dist, dist + n + 1, 0);
 
@@ -77,7 +89,7 @@ int good(int query){
 					if(par[next] == -1){
 						par[next] = fr;
 						dist[next] = dist[fr] + 1;
-					} else if(next != par[fr]){
+					} else if(next != par[fr] and next != fr){
 						return false;
 					}
 				}
@@ -85,7 +97,7 @@ int good(int query){
 		}
 	}
 
-	return true;
+	return vertices <= edges;
 }
 
 int main(){
@@ -102,6 +114,7 @@ int main(){
 	for(auto ite = m.begin(); ite != m.end(); ite++){
 		ite->second = ind;
 		rev[ind] = ite->first;
+		ind++;
 	}
 
 	for(int i = 0; i < n; i++){

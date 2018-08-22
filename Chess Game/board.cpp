@@ -3,7 +3,7 @@
 namespace BoardStructure {
 	std::vector<BoardState> boardHistory;
 	BoardState board;
-	bool kill = false;
+	bool gameEnded = false;
 	int boardHistorySize;
 	Magic::color currMoveColor;
 	BoardState initBoard;
@@ -88,7 +88,7 @@ namespace BoardStructure {
 		boardHistorySize--;
 		board = boardHistory[boardHistory.size() - 1];
 		currMoveColor = Helper::getOtherColor(currMoveColor);
-		kill = false;
+		gameEnded = false;
 
 		return true;
 	}

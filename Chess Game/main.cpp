@@ -2,6 +2,7 @@
 #include <vector>
 #include <cstdlib> 
 
+//
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "magic.h"
@@ -36,7 +37,7 @@
 	std::pair<sf::Vector2i, sf::Vector2i> lastMove = {{-1, -1}, {-1, -1}};
 
 	auto x = AI::getBestMove();
-	bool moved = false;
+	bool AIMoved = false;
 
 	while (window.isOpen()){
 		sf::Event event;
@@ -56,7 +57,7 @@
 					BoardStructure::undoMove();
 					lastMove = std::pair<sf::Vector2i, sf::Vector2i>{{-1, -1}, {-1, -1}};
 					x = std::pair<sf::Vector2i,sf::Vector2i>{{-1, -1}, {-1, -2}};
-					moved = true;
+					AIMoved = true;
 				}
 			} else if(event.type == sf::Event::MouseButtonReleased){
 				if(clickState != 1 or held == NULL){
@@ -67,7 +68,7 @@
 				if(GameHandler::attemptMove(*held, Helper::getIndices(mouseLocation), true)){
 					lastMove = {prevBoardPos, Helper::getIndices(mouseLocation)};
 					x = std::pair<sf::Vector2i,sf::Vector2i>{{-1, -1}, {-1, -2}};
-					moved = false;
+					AIMoved = false;
 					GameHandler::checkWin();
 					sound.play();
 				}			
@@ -81,13 +82,14 @@
 
 		if(x != std::pair<sf::Vector2i,sf::Vector2i>{{-1, -1}, {-1, -1}} and 
 			x != std::pair<sf::Vector2i,sf::Vector2i>{{-1, -1}, {-1, -2}}){
-			if(!moved and GameHandler::attemptMove(BoardStructure::board[x.first.y][x.first.x], x.second, false)){
+			if(!AIMoved and GameHandler::attemptMove(BoardStructure::board[x.first.y][x.first.x], x.second, false)){
 				lastMove = x;
 				sound.play();
 				GameHandler::checkWin();
 			}
-			moved = true;
+			AIMoved = true;
 		}
+
 		if(lastMove != std::pair<sf::Vector2i, sf::Vector2i>{{-1, -1}, {-1, -1}}){
 			sf::Vector2f startPos = sf::Vector2f(lastMove.first.x * Magic::cellSize, lastMove.first.y * Magic::cellSize);
 			sf::Vector2f nextPos = sf::Vector2f(lastMove.second.x * Magic::cellSize, lastMove.second.y * Magic::cellSize);
@@ -100,7 +102,6 @@
 			window.draw(startPosCircle);
 			window.draw(nextPosCircle);
 		}
-
 
 		if(clickState == 1){
 			if(held == NULL){
@@ -125,7 +126,7 @@
 
 		if(x == std::pair<sf::Vector2i,sf::Vector2i>{{-1, -1}, {-1, -2}}){
 			x = AI::getBestMove();
-		}
+		} //postpone calculating AI move so that the board is rendered properly
 		
 		if(clickState == 1 and held != NULL){
 			held->cleared = false;
