@@ -5,7 +5,7 @@ namespace Magic {
 	const int boardSize = 8;
 	const int cellSize = size / boardSize;
 	const int pieces = 7;
-	const int propagationLimit = 7;
+	const int propagationLimit = 6;
 	const double pieceWorthCoefficient = 50.0;
 	const double pieceWorth[] = {0, 1, 3.2, 3.33, 5.1, 8.8, 100000.0};
 	color focusColor = Magic::color::black;
