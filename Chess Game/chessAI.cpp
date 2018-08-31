@@ -1,4 +1,5 @@
 #include "chessAI.h"
+#include <ctime>
 
 namespace AI {
 	const double INF = 1e9;
@@ -24,8 +25,16 @@ namespace AI {
 			return checkValue;
 		}
 
-		if(movesLeft == 0){
-			return BoardStructure::getBoardValue();
+		double value = BoardStructure::getBoardValue();
+
+		if(BoardStructure::currMoveColor == Magic::color::white){
+			if(std::abs(value - alpha) > Magic::annealingDiff[movesLeft]){
+				return value;
+			}
+		} else if(BoardStructure::currMoveColor == Magic::color::black){
+			if(std::abs(value - beta) > Magic::annealingDiff[movesLeft]){
+				return value;
+			}
 		}
 
 		double bestAction = -2.0*INF;
@@ -42,11 +51,11 @@ namespace AI {
 																									BoardStructure::board[newPos.y][newPos.x].pieceColor != BoardStructure::currMoveColor)){
 								if(GameHandler::validatePieceMove(startPos, newPos, BoardStructure::board[startPos.y][startPos.x], false) and
 									 GameHandler::attemptMove(BoardStructure::board[startPos.y][startPos.x], newPos, false)){
-									auto response = dfs(movesLeft - 1, alpha, beta);
+									auto response = dfs(movesLeft + 1, alpha, beta);
 									response *= -1;
 									if(response > bestAction){
 										bestAction = response;
-										if(movesLeft == Magic::propagationLimit){
+										if(movesLeft == 0){
 											bestFirstAction = {startPos, newPos};
 										}
 									}
@@ -78,7 +87,9 @@ namespace AI {
 		if(BoardStructure::currMoveColor != Magic::focusColor){
 			return bestFirstAction;
 		}
-		dfs(Magic::propagationLimit, -INF, INF);
+
+		dfs(0, -INF, INF);
+
 		return bestFirstAction;
 	}
 }
