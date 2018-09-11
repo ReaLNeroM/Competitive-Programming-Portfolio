@@ -2,7 +2,6 @@
 #include <vector>
 #include <cstdlib> 
 
-//
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "magic.h"
@@ -12,7 +11,7 @@
 #include "gameHandler.h"
 #include "chessAI.h"
 
- int main(){
+int main(){
 	sf::RenderWindow window(sf::VideoMode(Magic::size, Magic::size), "It Works!");
 	window.setFramerateLimit(60);
 

@@ -1,3 +1,4 @@
+
 #include "magic.h"	
 
 namespace Magic {
@@ -8,7 +9,7 @@ namespace Magic {
 	const double pieceWorthCoefficient = 50.0;
 	const double INF = 1e10;
 	const double pieceWorth[] = {0, 1, 3.2, 3.33, 5.1, 8.8, 100000.0};
-	const double annealingDiff[] = {INF, INF, 800, 400, 200, 100, 50, 25, 12.5, 6.25, 3.125, 1.5625, -1.0};
+	const int propagationLimit = 6;
 	color focusColor = Magic::color::black;
 	std::string boardString = "img/board.png";
 	std::string possibleMove = "img/highlight.png";

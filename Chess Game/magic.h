@@ -26,7 +26,6 @@ namespace Magic {
 	extern const int propagationLimit;
 	extern const double pieceWorthCoefficient;
 	extern const double pieceWorth[7];
-	extern const double annealingDiff[13];
 	extern color focusColor;
 	extern std::string boardString;
 

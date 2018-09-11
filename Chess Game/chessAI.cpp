@@ -27,14 +27,8 @@ namespace AI {
 
 		double value = BoardStructure::getBoardValue();
 
-		if(BoardStructure::currMoveColor == Magic::color::white){
-			if(std::abs(value - alpha) > Magic::annealingDiff[movesLeft]){
-				return value;
-			}
-		} else if(BoardStructure::currMoveColor == Magic::color::black){
-			if(std::abs(value - beta) > Magic::annealingDiff[movesLeft]){
-				return value;
-			}
+		if(movesLeft == Magic::propagationLimit){
+			return value;
 		}
 
 		double bestAction = -2.0*INF;
