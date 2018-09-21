@@ -10,7 +10,7 @@ namespace Magic {
 	const double INF = 1e10;
 	const double pieceWorth[] = {0, 1, 3.2, 3.33, 5.1, 8.8, 100000.0};
 	const int propagationLimit = 6;
-	color focusColor = Magic::color::black;
+	color playerColor = Magic::color::none;
 	std::string boardString = "img/board.png";
 	std::string possibleMove = "img/highlight.png";
 

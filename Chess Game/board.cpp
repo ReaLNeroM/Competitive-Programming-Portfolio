@@ -105,7 +105,7 @@ namespace BoardStructure {
 		for(int i = 0; i < Magic::boardSize; i++){
 			for(int j = 0; j < Magic::boardSize; j++){
 				if(!board[i][j].checkDestroyed() and board[i][j].pieceColor != Magic::color::none and board[i][j].pieceType != Magic::type::blank){
-					if(currMoveColor == board[i][j].getColor() and currMoveColor != Magic::focusColor){
+					if(currMoveColor == board[i][j].getColor() and currMoveColor != Magic::playerColor){
 						sf::RectangleShape rectangle(sf::Vector2f(Magic::cellSize, Magic::cellSize));
 						rectangle.setPosition(sf::Vector2f(j * Magic::cellSize, i * Magic::cellSize));
 						rectangle.setFillColor(sf::Color(0, 0, 0, 0));

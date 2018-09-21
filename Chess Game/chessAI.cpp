@@ -78,7 +78,7 @@ namespace AI {
 
 	std::pair<sf::Vector2i, sf::Vector2i> getBestMove(){
 		bestFirstAction = {{-1, -1}, {-1, -1}};
-		if(BoardStructure::currMoveColor != Magic::focusColor){
+		if(BoardStructure::currMoveColor == Magic::playerColor){
 			return bestFirstAction;
 		}
 

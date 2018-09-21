@@ -83,10 +83,13 @@ int main(){
 			x != std::pair<sf::Vector2i,sf::Vector2i>{{-1, -1}, {-1, -2}}){
 			if(!AIMoved and GameHandler::attemptMove(BoardStructure::board[x.first.y][x.first.x], x.second, false)){
 				lastMove = x;
+				if(Magic::playerColor == Magic::color::none){
+					x = std::pair<sf::Vector2i,sf::Vector2i>{{-1, -1}, {-1, -2}};
+				}
 				sound.play();
 				GameHandler::checkWin();
 			}
-			AIMoved = true;
+			AIMoved = false;
 		}
 
 		if(lastMove != std::pair<sf::Vector2i, sf::Vector2i>{{-1, -1}, {-1, -1}}){
