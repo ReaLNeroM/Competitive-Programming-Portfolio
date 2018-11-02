@@ -4,42 +4,26 @@ typedef long long ll;
 
 const ll maxn = 1e2 + 10;
 const ll maxbit = (1 << 17);
-const ll INF = 1000000000000000010;
+const ll INF = 1e15;
 
-ll a[maxn], b[maxn], c[maxn];
-std::vector<std::vector<ll>> check[maxn];
-ll dp[maxn][maxbit];
-ll mask[maxn];
-ll n, k, p;
+ll calc(ll a, ll start, ll n){
+	ll res = 0;
+	ll x = 1;
+	for(ll i = start, j = n - 1 - start; i <= j; i++, j--){
+		x *= a;
 
-ll dpfunc(ll pos, ll bitset){
-	if(dp[pos][bitset] != -1){
-		return dp[pos][bitset];
-	}
+		if(res > INF or x > INF){
+			return INF;
+		}
 
-	for(auto v : check[pos]){
-		ll a = v[0];
-		ll count = v[1];
-
-		ll finalbitset = (mask[pos - a] & bitset);
-		if(__builtin_popcount(finalbitset) != count){
-			dp[pos][bitset] = 0;
-			return 0;
+		if(i == j){
+			res += x;
+		} else {
+			res += 2 * x;
 		}
 	}
 
-	if(pos == n){
-		dp[pos][bitset] = 1;
-		return 1;
-	}
-
-	dp[pos][bitset] = dpfunc(pos + 1, (bitset * 2    ) & (maxbit - 1)) +
-					  dpfunc(pos + 1, (bitset * 2 + 1) & (maxbit - 1));
-
-	if(dp[pos][bitset] > INF){
-		dp[pos][bitset] = INF;
-	}
-	return dp[pos][bitset];
+	return res;
 }
 
 int main(){
@@ -48,41 +32,54 @@ int main(){
 	ll testCases;
 	std::cin >> testCases;
 
-	for(ll i = 0; i < maxn; i++){
-		mask[i] = (1LL << i) - 1;
-	}
-
 	for(ll testcase = 1; testcase <= testCases; testcase++){
-		std::cin >> n >> k >> p;
-		p--;
+		ll l, n, k;
+		std::cin >> l >> n >> k;
 
-		memset(dp, -1, sizeof(dp));
-		for(int i = 0; i < maxn; i++){
-			check[i].clear();
-		}
+		int res = 0;
+		bool exceed = false;
 
-		for(ll i = 0; i < k; i++){
-			std::cin >> a[i] >> b[i] >> c[i];
-			a[i]--, b[i]--;
-			check[b[i] + 1].push_back({a[i], c[i]});
-		}
-
-		std::cout << "Case #" << testcase << ": ";
-
-		ll made = 0;
-		for(ll i = 0; i < n; i++){
-			if(p <   dpfunc(i + 1, (made * 2)      & (maxbit - 1))){
-				std::cout << 0;
-				made = made * 2;
-				made &= (maxbit - 1);
+		for(int i = 0; i < n / 2 + n % 2; i++){
+			if(i != 0){
+				if(k == 0){
+					res = 2 * i;
+					break;
+				}
+				if(k <= 1){
+					res = 2 * i + 1;
+					break;
+				}
+				k -= 2;
 			} else {
-				std::cout << 1;
-				p -= dpfunc(i + 1, (made * 2)      & (maxbit - 1));
-				made = made * 2 + 1;
-				made &= (maxbit - 1);
+				k -= 1;
+			}
+
+			exceed = true;
+			int currBlock = calc(l, i + 1, n) + 1;
+			if(2 * (i + 1) <= n){
+				currBlock++;
+			}
+
+			for(int j = 0; j < l; j++){
+				if(k < currBlock){
+					exceed = false;
+					break;
+				} else {
+					k -= currBlock;
+				}
+			}
+
+			if(exceed){
+				res = n;
+				break;
 			}
 		}
 
-		std::cout << '\n';
+		if(k % 2 == 1 and !exceed){
+			res++;
+		}
+		std::cout << "Case #" << testcase << ": ";
+
+		std::cout << n - res << '\n';
 	}
 }
