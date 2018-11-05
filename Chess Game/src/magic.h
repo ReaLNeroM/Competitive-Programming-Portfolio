@@ -23,9 +23,10 @@ namespace Magic {
 	extern const int boardSize;
 	extern const int cellSize;
 	extern const int pieces;
-	extern const int propagationLimit;
 	extern const double pieceWorthCoefficient;
 	extern const double pieceWorth[7];
+	extern int propagationLimit;
+	extern int branchExplores;
 	extern color playerColor;
 	extern std::string boardString;
 

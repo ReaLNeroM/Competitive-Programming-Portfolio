@@ -20,6 +20,21 @@ namespace GameHandler {
 		return false;
 	}
 
+	bool quickCanPieceMove(sf::Vector2i boardPos, Piece::Base& currPiece){
+		for(int k = 0; k < Magic::boardSize; k++){
+			for(int l = 0; l < Magic::boardSize; l++){
+				sf::Vector2i newPos = sf::Vector2i(l, k);
+				if(Helper::withinBounds(newPos) and boardPos != newPos and (BoardStructure::board[newPos.y][newPos.x].checkDestroyed() or
+																						BoardStructure::board[newPos.y][newPos.x].pieceColor != currPiece.pieceColor)){
+					if(!validatePieceMove(boardPos, newPos, BoardStructure::board[boardPos.y][boardPos.x], false)){
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
+	}
 	bool canPieceMove(sf::Vector2i boardPos, Piece::Base& currPiece){
 		for(int k = 0; k < Magic::boardSize; k++){
 			for(int l = 0; l < Magic::boardSize; l++){

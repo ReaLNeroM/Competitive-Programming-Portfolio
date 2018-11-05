@@ -14,6 +14,7 @@ namespace GameHandler {
 	bool movePossible(Magic::color, bool);
 	bool isKingAttacked(Magic::color);
 	bool canPieceMove(sf::Vector2i, Piece::Base&);
+	bool quickCanPieceMove(sf::Vector2i, Piece::Base&);
 	bool checkWin();
 
 	bool attemptMove(Piece::Base&, sf::Vector2i, bool = true);

@@ -29,6 +29,7 @@ namespace BoardStructure {
 	extern BoardState initBoard;
 	extern Magic::color currMoveColor;
 
+	long long hash();
 	double getBoardValue();
 	Piece::Base* find(sf::Vector2i);
 	void initTextures();

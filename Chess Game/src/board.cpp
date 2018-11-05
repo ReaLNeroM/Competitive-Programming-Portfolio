@@ -8,6 +8,23 @@ namespace BoardStructure {
 	Magic::color currMoveColor;
 	BoardState initBoard;
 
+	long long initialResidue = 32642243;
+	long long mod = 1000000000000357LL;
+	long long multiplier = 23;
+
+	long long hash(){
+		long long hash = initialResidue;
+		for(int i = 0; i < Magic::boardSize; i++){
+			for(int j = 0; j < Magic::boardSize; j++){
+				hash *= multiplier;
+				hash += (int) BoardStructure::board[i][j].getColor() * Magic::pieces + BoardStructure::board[i][j].pieceType + 1;
+				hash %= mod;
+			}
+		}
+
+		return hash;
+	}
+
 	void initTextures(){
 		for(int i = 0; i < 2; i++){
 			for(int j = 0; j < Magic::pieces; j++){

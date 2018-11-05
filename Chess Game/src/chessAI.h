@@ -1,5 +1,6 @@
 #pragma once
 
+#include <ctime>
 #include "gameHandler.h"
 #include "board.h"
 #include "piece.h"
