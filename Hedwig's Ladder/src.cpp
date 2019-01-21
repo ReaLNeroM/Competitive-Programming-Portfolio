@@ -25,7 +25,13 @@ int main(){
 		}
 	}
 
-	for(int i = 1; i < maxn; i++){
-		std::cout << dp[i] << '\n';
+	int test_cases;
+	std::cin >> test_cases;
+
+	while(test_cases--){
+		int test_id, n;
+		std::cin >> test_id >> n;
+
+		std::cout << test_id << ' ' << dp[n] << '\n';
 	}
 }
