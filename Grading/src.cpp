@@ -1,42 +1,42 @@
 /** Solution details
 Let's consider the case where the number of files we can remove is 0.
-The optimal solution will be one of the two following types:
+The optimal solution will be one of the following two greedy procedures:
 
-1) We grade all 'A' documents we can i.e. that are on top of their corresponding stacks. Once we've
-exhausted all 'A' type documents that we can grade, we have to context switch and start reviewing
-'B' type documents. We similarly exhaust all 'B' type documents on top of stacks, and we are now
-forced to switch to 'A' type documents. This process repeats until each pile is empty. So in
-essence, the documents we context switch to forms a string 'ABABABAB....'
+1) We grade all 'A' documents i.e. that are on top of their corresponding stacks, in arbitary order.
+   We do this until we exhaust all 'A' type documents that we can grade, after which we have to
+   context switch and start reviewing 'B' type documents. We similarly exhaust all 'B' type
+   documents that are at the top of their stack, and we are now forced to switch to 'A' type
+   documents. This process repeats until each pile is empty. So in essence, the documents we context
+   switch to forms a string 'ABABABAB....'
 2) It's similar to 1), in that we repeat this process of exhausting all documents we can without
-context-switching, except we start with 'B' type documents first, so our "context-switches string"
-looks like 'BABABABA...' instead. 
+   context-switching, except we start with 'B' type documents first, so our "context-switches
+   string" looks like 'BABABABA...' instead.
 
 Another important thing:
-
 An important observation in this problem is that it's easier to work with the number of
 context-switches, and 'reverse' the problem from there. This means the meat of our algorithm asks
-for each K: I want to do a total of K context-switches (starting from 'A' and 'B' is different, so
-we'll consider them independently), what's the least number of documents I have to remove? Wait,
-what's the range on K? It's between 0 and some large number. What's the largest number of
-context-switches we could do? Intuitively, the result is largest when we have grading piles that
-look like 'ABABAB..', since we only remove one document for each context switch. If we have two test
-piles that look like
-'ABABAB...'
-'BABABA...',
+for each K and starting document type('A' or 'B'): I want to do a total of K context-switches, with
+my first document being of type 'A'/'B', what's the least number of documents I have to remove?
+Wait, what's the range on K? It's between 0 and the 2 * H. Why 2 * H? It's the largest result an
+optimal solution could have. Intuitively, the result is largest when we have grading piles that look
+like 'ABABAB..', since we only remove one document for each context switch. If we have two test
+piles that look like 
+'ABABAB...' 
+'BABABA...', 
 we'll have a result of 2 * H. It turns out this is the upper bound on the result (not proved, but
-feel free to have at it).
+feel free to have at it). 
 
 Back to the problem. So solving the case where we forbid file removal is fairly straightforward. How
-does file removal change our approach? 
+does file removal change our approach?
 
-We'll have to again use our human power of abstraction, and consider a special case: where S=1 i.e.
-there is only one stack. Consider the grading pile 'AABBBBBAA'. We can achieve a result of 1
-context-switch by just removing the first two 'A' documents and the last two 'A' documents, so we
-need to remove at least 4 documents. So we have to choose where to 'invest' our file removals to
-ensure we don't exceed our context-switches limit by completely eliminating consecutive clusters of
-'A' (or 'B') documents, which will reduce our result by 1 context-switch for each cluster we
-remove. Here, I implemented choosing which clusters to cull using DP, but I think greedily cutting
-the shortest clusters would also work.
+We'll have to again use our human ability to abstract away details, and consider a special case:
+where S=1 i.e. there is only one stack. Consider the grading pile 'AABBBBBAA'. We can achieve a
+result of 1 context-switch by just removing the first two 'A' documents and the last two 'A'
+documents, so we need to remove at least 4 documents. So we have to choose where to 'invest' our
+file removals to ensure we don't exceed our context-switches limit. We do this by eliminating
+consecutive clusters of 'A' (or 'B') documents, which will reduce our result by 1 context-switch for
+each cluster removed. Here, I implemented choosing which clusters to cull using DP, but I think
+greedily cutting the shortest clusters would also work.
 
 How do we extend this for arbitrary number of grading piles? Very simple: If we want only K
 context-switches (and we start with 'A'/'B' documents), we compute the minimum number of files to be
@@ -47,10 +47,11 @@ context-switches, you'll need at least Y removals". Since the more context-switc
 do, the less (or equal) documents we need to remove, this is a monotonically decreasing list! We can
 just binary search over this list, and answer all queries in O(Q*lgH) time, which is good enough.
 
-What's the precomputation cost? The DP for each stack costs O(4 * H^3), and there are O(S) stacks,
-so the result is O(4 * S * H^3) operations. Using some additional optimizations (and using -O4),
-this finishes in below a minute on my laptop. If I instead used greedy, I could probably shave off a
-factor of H off the complexity.
+What's the precomputation cost? There are O(S) stacks, for each of which we compute a DP with 
+O(H * 2 * H) states, and each DP recurrence O(2 * H) to compute, so the result is O(4 * S * H^3)
+operations. Using some optimizations on line 92-94 and using gcc's -O4 flag, this finishes in below
+a minute on my laptop. If I instead used a greedy approach for "cluster culling" as described above,
+I could probably shave off a factor of H off the complexity.
 */
 
 #include <bits/stdc++.h>
