@@ -15,7 +15,7 @@ Another important thing:
 
 An important observation in this problem is that it's easier to work with the number of
 context-switches, and 'reverse' the problem from there. This means the meat of our algorithm asks
-for each K:I want to do a total of K context-switches (starting from 'A' and 'B' is different, so
+for each K: I want to do a total of K context-switches (starting from 'A' and 'B' is different, so
 we'll consider them independently), what's the least number of documents I have to remove? Wait,
 what's the range on K? It's between 0 and some large number. What's the largest number of
 context-switches we could do? Intuitively, the result is largest when we have grading piles that
@@ -44,7 +44,7 @@ removed for each stack independently, and just sum each stack's result!
 
 So as a result, we've found a list indexed for X where X means "if you want to do at or below X
 context-switches, you'll need at least Y removals". Since the more context-switches we're allowed to
-do, the less (or equal) documents we need to remove, this is a monotonically increasing list! We can
+do, the less (or equal) documents we need to remove, this is a monotonically decreasing list! We can
 just binary search over this list, and answer all queries in O(Q*lgH) time, which is good enough.
 
 What's the precomputation cost? The DP for each stack costs O(4 * H^3), and there are O(S) stacks,
