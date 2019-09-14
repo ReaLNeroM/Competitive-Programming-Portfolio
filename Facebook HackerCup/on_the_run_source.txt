@@ -1,0 +1,49 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <fstream>
+#include <algorithm>
+#include <stack>
+#include <queue>
+#include <map>
+#include <set>
+#include <cmath>
+#include <math.h>
+#include <time.h>
+
+using namespace std;
+
+void solve(ifstream &cin, ofstream &cout)
+{
+	int n, m, k;
+	cin >> n >> m >> k;
+	int a, b;
+	cin >> a >> b;
+	vector<int> r(k), c(k);
+	for (int i = 0; i < k; i++)
+	{
+		cin >> r[i] >> c[i];
+	}
+	if (k == 2 && (a + b) % 2 == (r[0] + c[0]) % 2 && (a + b) % 2 == (r[1] + c[1]) % 2)
+	{
+		cout << "Y\n";
+	}
+	else
+	{
+		cout << "N\n";
+	}
+}
+
+int main()
+{
+	ifstream cin("in.txt");
+	ofstream cout("out.txt");
+	long long t;
+	cin >> t;
+	for (long long i = 1; i <= t; i++)
+	{
+		cout << "Case #" << i << ": ";
+		solve(cin, cout);
+	}
+	return 0;
+}
