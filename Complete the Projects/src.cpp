@@ -43,7 +43,6 @@ int main(){
 		}
 	}
 
-
 	for(int i = 0; i < n; i++){
 		int bestFound = -1;
 		int bestFoundAngle = -1;
@@ -58,12 +57,12 @@ int main(){
 
 		if(bestFound == -1){
 			break;
-		}
+		}		
 
 		remove_element(bestFound);
 	}
 
-	if(!std::find(eliminated, eliminated + n, false)){
+	if(std::find(eliminated, eliminated + n, false) == eliminated + n){
 		std::cout << "YES\n";
 	} else {
 		std::cout << "NO\n";
