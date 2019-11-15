@@ -52,43 +52,45 @@ def matrix_multiply(mat_a, mat_b):
 	return mat_c
 
 mat = [
-	[3, 21, 0, 9, 0],
-	[1, 7, -1, -2, -1], 
-	[2, 14, 0, 6, 1],
-	[6, 42, -1, 13, 0]
+	[1, 0, -1],
+	[2, 1, 3],
+	[1, 1, 4]
 ]
 
 augmented = [
-	[1, 0, 0, 0, 0],
-	[0, 1, 0, 0, 0],
-	[0, 0, 1, 0, 0],
-	[0, 0, 0, 1, 0],
-	[0, 0, 0, 0, 1],
+	[1, 0, 0],
+	[0, 1, 0],
+	[0, 0, 1],
 ]
 
-divide(mat, augmented, 1, 3)
+add(mat, augmented, 1, 2, -2)
+add(mat, augmented, 1, 3, -1)
 
-add(mat, augmented, 1, 2, -1)
-add(mat, augmented, 1, 3, -2)
-add(mat, augmented, 1, 4, -6)
+print mat
 
-multiply(mat, augmented, 2, -1)
+# divide(mat, augmented, 1, 3)
 
-add(mat, augmented, 2, 4, 1)
+# add(mat, augmented, 1, 2, -1)
+# add(mat, augmented, 1, 3, -2)
+# add(mat, augmented, 1, 4, -6)
 
-add(mat, augmented, 3, 4, -1)
+# multiply(mat, augmented, 2, -1)
 
-for matrow, augmentedrow in zip(mat, augmented):
-	printed = 0
-	print '[',
-	printed += 2
-	for entry in matrow:
-		print ' ' * (3 - len(str(entry))) + str(entry) + ',',
-		printed += 8
-	print ']'
-	printed += 2
+# add(mat, augmented, 2, 4, 1)
 
-	# for entry in augmentedrow:
-	# 	print ' ' * (3 - len(str(entry))) + str(entry) + ',',
-	# 	printed += 8
-	# print ']'
+# add(mat, augmented, 3, 4, -1)
+
+# for matrow, augmentedrow in zip(mat, augmented):
+# 	printed = 0
+# 	print '[',
+# 	printed += 2
+# 	for entry in matrow:
+# 		print ' ' * (3 - len(str(entry))) + str(entry) + ',',
+# 		printed += 8
+# 	print ']'
+# 	printed += 2
+
+# 	# for entry in augmentedrow:
+# 	# 	print ' ' * (3 - len(str(entry))) + str(entry) + ',',
+# 	# 	printed += 8
+# 	# print ']'
