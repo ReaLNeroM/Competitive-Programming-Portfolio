@@ -37,6 +37,34 @@ def divide(mat, augmented, a, c):
 	for i in range(n):
 		augmented[a][i] /= c
 
+def is_nonzero_float(x):
+	return abs(x) > 0.00001
+
+
+def matrix_inverse(mat, augmented):
+	r = len(mat)
+	c = len(mat[0])
+	is_leading_one_column = []
+
+	for i in range(r):
+		for j in range(c):
+			if is_nonzero_float(mat[i][j]):
+				divide(mat, augmented, i + 1, mat[i][j])
+				for k in range(r):
+					if k != i and is_nonzero_float(mat[k][j]):
+						add(mat, augmented, i + 1, k + 1, -mat[k][j])
+				is_leading_one_column.append(j)
+				break
+
+	is_leading_one_column.sort()
+
+	for i, column_index in enumerate(is_leading_one_column):
+		for j in range(r):
+			if is_nonzero_float(mat[j][column_index]):
+				mat[j], mat[i] = mat[i], mat[j]
+				break
+
+
 def matrix_multiply(mat_a, mat_b):
 	mat_a_n = len(mat_a)
 	mat_a_m = len(mat_a[0])
@@ -52,21 +80,27 @@ def matrix_multiply(mat_a, mat_b):
 	return mat_c
 
 mat = [
-	[1, 0, -1],
-	[2, 1, 3],
-	[1, 1, 4]
+	[1, 1, 1, 1],
+	[1, 2, 3, 4],
+	[1, 4, 9, 16],
+	[1, 8, 27, 64]
 ]
+
+r = len(mat)
+c = len(mat[0])
 
 augmented = [
-	[1, 0, 0],
-	[0, 1, 0],
-	[0, 0, 1],
+	[
+		1 if i == j else 0 
+		for j in range(c)
+	] 
+	for i in range(r)
 ]
+# add(mat, augmented, 1, 2, -2)
+# add(mat, augmented, 1, 3, -1)
 
-add(mat, augmented, 1, 2, -2)
-add(mat, augmented, 1, 3, -1)
-
-print mat
+matrix_inverse(mat, augmented)
+print mat, augmented
 
 # divide(mat, augmented, 1, 3)
 
