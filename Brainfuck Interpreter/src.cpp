@@ -4,61 +4,71 @@
 #include <deque>
 #include <stdlib.h>
 
-void error(){
-	std::cerr << "INVALID COMMAND" << std::endl;
-	std::cerr << "TERMINATING" << std::endl;
-	exit(EXIT_FAILURE);	
+void error(std::string error){
+	std::cerr << "ERROR: " << error << std::endl;
+	exit(EXIT_FAILURE);
 }
 
 int main(){
 	std::string input;
 	std::cin >> input;
 
-	std::stack<int> s;
+	std::stack<int> bracket_indices;
 
-	std::deque<char> array(0); //2 byte length, not single byte
+	std::deque<char> array(1);
 
-	int pointer_array = 0;
+	int tape_head = 0;
 
-	for(int i = 0; i < input.size(); i++){
+	for(int i = 0; i < (int) input.size(); i++){
 		if(input[i] == '+'){
-			array[pointer_array]++;
-			if(array[pointer_array] > 255){
-				array[pointer_array] = 255;
-			}
+			array[tape_head]++;
 		} else if(input[i] == '-'){
-			array[pointer_array]--;
-			// if(array[pointer_array] < 0){
-			// 	array[pointer_array] = 0;
-			// }
+			array[tape_head]--;
 		} else if(input[i] == '<'){
-			pointer_array--;
-			if(pointer_array == -1){
+			tape_head--;
+			if(tape_head == -1){
 				array.push_front(0);
-				pointer_array++;
+				tape_head++;
 			}
 		} else if(input[i] == '>'){
-			pointer_array++;
-			if(pointer_array == array.size()){
-				array.push_back((char) 0);
+			tape_head++;
+			if(tape_head == (int) array.size()){
+				array.push_back(0);
 			}
 		} else if(input[i] == '.'){
-			std::cout << ((int) array[pointer_array]) << ' ';
+			std::cout << ((char) array[tape_head]);
 		} else if(input[i] == ','){
-			std::cin >> array[pointer_array];
+			std::cin >> array[tape_head];
 		} else if(input[i] == '['){
-			s.push(pointer_array);
-		} else if(input[i] == ']'){
-			if(s.empty()){
-				error();
-			}
-			if(array[pointer_array] != 0){
-				i = s.top();
+			if(array[tape_head] == 0){
+				int open_count = 0;
+
+				int j = i; // stored for error logging.
+				do {
+					open_count += (input[i] == '[');
+					open_count -= (input[i] == ']');
+					i++;
+				} while(i < (int) input.size() and open_count > 0);
+				i--; // to cancel out iteration increment
+
+				if(open_count > 0){
+					error("Couldn't find matching closing bracket for bracket at " + std::to_string(j));
+				}
 			} else {
-				s.pop();
+				bracket_indices.push(i);
+			}
+		} else if(input[i] == ']'){
+			if(bracket_indices.empty()){
+				error("Found closing bracket at " + std::to_string(i) + " without a matching opening bracket");
+			}
+
+			if(array[tape_head] != 0){
+				i = bracket_indices.top();
+			} else {
+				bracket_indices.pop();
 			}
 		} else {
-			// error();
+			//ignore comments.
 		}
 	}
 }
