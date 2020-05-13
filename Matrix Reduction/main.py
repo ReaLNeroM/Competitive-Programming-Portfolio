@@ -1,4 +1,5 @@
 def add(mat, augmented, a, b, c):
+	"""Adds c*mat[a] to row mat[a]."""
 	n = len(mat)
 	m = len(mat[0])
 	a -= 1
@@ -8,7 +9,9 @@ def add(mat, augmented, a, b, c):
 	for i in range(n):
 		augmented[b][i] += augmented[a][i] * c
 
+
 def swap(mat, augmented, a, b):
+	"""Swaps two rows of a matrix."""
 	n = len(mat)
 	m = len(mat[0])
 	a -= 1
@@ -18,7 +21,9 @@ def swap(mat, augmented, a, b):
 	for i in range(n):
 		augmented[a][i], augmented[b][i] = augmented[b][i], augmented[a][i]
 
+
 def multiply(mat, augmented, a, c):
+	"""Multiplies a row of a matrix by c."""
 	a -= 1
 	n = len(mat)
 	m = len(mat[0])
@@ -27,7 +32,9 @@ def multiply(mat, augmented, a, c):
 	for i in range(n):
 		augmented[a][i] *= c
 
+
 def divide(mat, augmented, a, c):
+	"""Divides a row of a matrix by c."""
 	a -= 1
 	c = float(c)
 	n = len(mat)
@@ -37,11 +44,14 @@ def divide(mat, augmented, a, c):
 	for i in range(n):
 		augmented[a][i] /= c
 
+
 def is_nonzero_float(x):
+	"""Helper function which returns True if a number is non-zero."""
 	return abs(x) > 0.00001
 
 
 def matrix_inverse(mat, augmented):
+	"""Computes the inverse of the given matrix, stored in augmented. Uses Gaussian elimination."""
 	r = len(mat)
 	c = len(mat[0])
 	is_leading_one_column = []
@@ -66,6 +76,7 @@ def matrix_inverse(mat, augmented):
 
 
 def matrix_multiply(mat_a, mat_b):
+	"""Computes the matrix product of the two given matrices naively i.e. with no optimizations."""
 	mat_a_n = len(mat_a)
 	mat_a_m = len(mat_a[0])
 	mat_b_n = len(mat_b)
@@ -79,28 +90,69 @@ def matrix_multiply(mat_a, mat_b):
 
 	return mat_c
 
-mat = [
-	[1, 1, 1, 1],
-	[1, 2, 3, 4],
-	[1, 4, 9, 16],
-	[1, 8, 27, 64]
+
+def matrix_fast_multiply(mat_a, mat_b):
+	"""Computes the matrix product of the two given matrices with less cache misses."""
+	mat_a_n = len(mat_a)
+	mat_a_m = len(mat_a[0])
+	mat_b_n = len(mat_b)
+	mat_b_m = len(mat_b[0])
+	mat_c = [[0 for i in range(mat_b_m)] for j in range(mat_a_n)]
+
+	for i in range(mat_a_n):
+		for k in range(mat_a_m):
+			for j in range(mat_b_n):
+				mat_c[i][j] += mat_a[i][k] * mat_b[k][j]
+
+	return mat_c
+
+
+def matrix_sub(mat_a, mat_b):
+	"""Computes A - B for the two given matrices."""
+	mat_a_n = len(mat_a)
+	mat_a_m = len(mat_a[0])
+	mat_c = [[0 for i in range(mat_a_m)] for j in range(mat_a_n)]
+
+	for i in range(mat_a_n):
+		for j in range(mat_a_m):
+			mat_c[i][j] = mat_a[i][j] - mat_b[i][j]
+
+	return mat_c
+
+
+mat_a = [
+	[0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 1],
+	[0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0],
+	[0, 1, 0, 0, 0],
+]
+mat_b = [
+	[0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 1],
+	[0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0],
+	[0, 2, 0, 0, 0],
 ]
 
-r = len(mat)
-c = len(mat[0])
+print matrix_sub(matrix_multiply(mat_a, mat_b), matrix_multiply(mat_b, mat_a))
+print matrix_sub(matrix_fast_multiply(mat_a, mat_b), matrix_fast_multiply(mat_b, mat_a))
 
-augmented = [
-	[
-		1 if i == j else 0 
-		for j in range(c)
-	] 
-	for i in range(r)
-]
-# add(mat, augmented, 1, 2, -2)
-# add(mat, augmented, 1, 3, -1)
+# r = len(mat)
+# c = len(mat[0])
 
-matrix_inverse(mat, augmented)
-print mat, augmented
+# augmented = [
+# 	[
+# 		1 if i == j else 0 
+# 		for j in range(c)
+# 	] 
+# 	for i in range(r)
+# ]
+# # add(mat, augmented, 1, 2, -2)
+# # add(mat, augmented, 1, 3, -1)
+
+# # matrix_inverse(mat, augmented)
+# print mat, augmented
 
 # divide(mat, augmented, 1, 3)
 

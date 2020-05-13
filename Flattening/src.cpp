@@ -2,59 +2,63 @@
 
 typedef long long ll;
 
-const int maxn = 1e2 + 1e2;
+const int maxn = 1e6 + 1e2;
+int n;
 int val[maxn];
-int dp[maxn][maxn];
+int dp[21][maxn];
+bool done[21][maxn];
+
+int dpfunc(int bit, int bitset){
+	if(done[bit][bitset]){
+		return dp[bit][bitset];
+	}
+
+	done[bit][bitset] = true;
+	int& ans = dp[bit][bitset];
+
+	if(bit == 20){
+		return ans;
+	}
+
+	ans += dpfunc(bit + 1, bitset);
+	if(bitset & (1 << bit)){
+		ans += dpfunc(bit + 1, bitset ^ (1 << bit));
+	}
+
+	return ans;
+}
 
 int main(){
+	std::ios::sync_with_stdio(false);
+
 	int test_cases;
 	std::cin >> test_cases;
 
 	for(int test_case = 1; test_case <= test_cases; test_case++){
-		std::cout << "Case #" << test_case << ": ";
-
-		int n, k;
-		std::cin >> n >> k;
+		std::cin >> n;
 
 		for(int i = 0; i < n; i++){
 			std::cin >> val[i];
 		}
 
-		for(int curr_n = n; curr_n >= 0; curr_n--){
-			for(int curr_k = k; curr_k >= 0; curr_k--){
-				if(curr_n == n){
-					dp[curr_n][curr_k] = 0;
-					continue;
-				} else if(curr_k == k){
-					dp[curr_n][curr_k] = n - curr_n;
-					continue;
-				}
+		std::sort(val, val + maxn);
 
-				int& ans = dp[curr_n][curr_k];
-				ans = n;
-
-				for(int next_n = curr_n + 1; next_n <= n; next_n++){
-					int changes = next_n - curr_n - 1;
-					bool isDifferent;
-
-					if(next_n == n){
-						isDifferent = false;
-					} else {
-						isDifferent = (val[next_n] != val[curr_n]);
-					}
-
-					if(curr_k == k and isDifferent){
-						continue;
-					}
-
-					// if(test_case == 2){
-					// 	std::cout << curr_n << ' ' << curr_k << ' ' << next_n << ' ' << curr_k + isDifferent << ' ' << changes << ' ' << changes + dp[next_n][curr_k + isDifferent] << '\n';
-					// }
-					ans = std::min(ans, changes + dp[next_n][curr_k + isDifferent]);
-				}
+		for(int i = 0; i < 21; i++){
+			for(int j = 0; j <= val[n - 1]; j++){
+				dp[i][j] = 0;
+				done[i][j] = false;
 			}
 		}
 
-		std::cout << dp[0][0] << '\n';
+		for(int i = 0; i < n; i++){
+			dp[20][val[i]]++;
+		}
+
+		int res = 0;
+		for(int i = 0; i < n; i++){
+			res += dpfunc(0, val[i]);
+		}
+
+		std::cout << res << '\n';
 	}
 }
